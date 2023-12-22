@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-pr7du08ut$p(4o-%jhd=jdb9pg60hvjsoj(+k+(=-+)rc-($yk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'zcy_donation.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
         'default': dj_database_url.config(default=getenv('DATABASE_URL')),
     }
 }
@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Kiev'
+TIME_ZONE = 'Europe/Kyiv'
 
 USE_I18N = True
 
