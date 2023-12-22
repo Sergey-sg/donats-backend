@@ -11,6 +11,15 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv
+from dotenv import load_dotenv
+import dj_database_url
+
+# Define the path to the .env file
+env_path = Path(__file__).resolve().parent.parent / '.env'
+
+# Load the environment variables from the .env file
+load_dotenv(env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +34,7 @@ SECRET_KEY = 'django-insecure-wt4&i9%u-=lvskse$#^)uljire#qy7g!$a#%(94=-a8!4oj^q2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -76,7 +86,7 @@ WSGI_APPLICATION = 'zcy_donation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'default': dj_database_url.config(default=getenv('DATABASE_URL')),
     }
 }
 
@@ -105,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
