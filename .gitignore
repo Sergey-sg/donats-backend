@@ -1,0 +1,31 @@
+### Django
+/db.sqlite3
+/media
+/static
+/.coverage
+/.idea
+/.vscode
+
+### Django REST framework
+/migrations
+*.pyc
+__pycache__
+
+### PyCharm
+.idea
+.gitignore
+*.iml
+*.ipr
+*.iws
+
+### Python
+**/*.pyc
+.env
+
+### Directories
+.mypy_cache
+build
+dist
+
+### Config
+mysql_config.cnf
