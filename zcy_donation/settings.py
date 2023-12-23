@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from os import getenv
 from dotenv import load_dotenv
-import dj_database_url
 
 # Define the path to the .env file
 env_path = Path(__file__).resolve().parent.parent / '.env'
@@ -86,7 +85,10 @@ WSGI_APPLICATION = 'zcy_donation.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'default': dj_database_url.config(default=getenv('DATABASE_URL')),
+        'NAME': getenv('DB_NAME'),
+        'USER': getenv('DB_USER'),
+        'PASSWORD': getenv('DB_PASSWORD'),
+        'HOST': getenv('DB_HOST'),
     }
 }
 
