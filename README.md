@@ -35,17 +35,20 @@ To manage sensitive data and configurations separately, follow these steps:
    ```bash
    touch .env
    ```
+3. **Open `.env` file:**
 
-3. **Add `DATABASE_URL` to `.env`:**
-   - Open the `.env` file with a text editor and add your `DATABASE_URL` information:
-     ```dotenv
-     DATABASE_URL=your_database_url_here
-     ```
-     Replace `your_database_url_here` with the actual database URL or connection string.
+2. **Add Database Information:**
+   Insert the database connection details as separate fields:
+   ```dotenv
+   DB_NAME='dbname'
+   DB_USER='username'
+   DB_PASSWORD='password'
+   DB_HOST='hostname'
+   ```
+   Replace `'dbname'`, `'username'`, `'password'`, and `'hostname'` with your actual database credentials.
 
-4. **Save the `.env` File:**
-   - Save the changes made to the `.env` file.
-   - Ensure this file remains secure and is not committed to version control systems.
+3. **Save the Changes:**
+   Save the `.env` file with the added database configuration fields.
 
 ### 3. MySQL Configuration
 Make sure the MySQL server is running.
