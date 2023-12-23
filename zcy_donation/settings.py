@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from os import getenv
 from dotenv import load_dotenv
-import dj_database_url
 
 # Define the path to the .env file
 env_path = Path(__file__).resolve().parent.parent / '.env'
@@ -29,12 +28,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wt4&i9%u-=lvskse$#^)uljire#qy7g!$a#%(94=-a8!4oj^q2'
+SECRET_KEY = 'django-insecure-pr7du08ut$p(4o-%jhd=jdb9pg60hvjsoj(+k+(=-+)rc-($yk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -85,8 +84,11 @@ WSGI_APPLICATION = 'zcy_donation.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'default': dj_database_url.config(default=getenv('DATABASE_URL')),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': getenv('DB_NAME'),
+        'USER': getenv('DB_USER'),
+        'PASSWORD': getenv('DB_PASSWORD'),
+        'HOST': getenv('DB_HOST'),
     }
 }
 
@@ -115,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Kiev'
+TIME_ZONE = 'Europe/Kyiv'
 
 USE_I18N = True
 
