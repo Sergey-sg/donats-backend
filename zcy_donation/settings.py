@@ -15,7 +15,7 @@ from os import getenv
 from dotenv import load_dotenv
 
 # Define the path to the .env file
-env_path = Path(__file__).resolve().parent.parent / '.env'
+env_path = Path(__file__).resolve().parent.parent / 'config' / '.env'
 
 # Load the environment variables from the .env file
 load_dotenv(env_path)
@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-pr7du08ut$p(4o-%jhd=jdb9pg60hvjsoj(+k+(=-+)rc-($yk'
+SECRET_KEY = getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -89,6 +89,7 @@ DATABASES = {
         'USER': getenv('DB_USER'),
         'PASSWORD': getenv('DB_PASSWORD'),
         'HOST': getenv('DB_HOST'),
+        'PORT': getenv('DB_PORT', '3306'),
     }
 }
 
