@@ -1,64 +1,63 @@
-# ZCY Donation
+# ZCY Donation Installation Guide
 
 ## Prerequisites
-- [Python 3.11](https://www.python.org/downloads/) installed
-- [MySQL](https://www.mysql.com/downloads/) installed
+- Make sure Python 3.11 is installed. You can get it from the [official Python website](https://www.python.org/downloads/).
+- Ensure MySQL is installed for the necessary database setup.
 
-## Installation Instructions
+## Installation Steps
 
 ### 1. Python and Virtual Environment Setup
-1. Install Python 3.11 if you haven't already. You can download it from the [official Python website](https://www.python.org/downloads/).
-2. Create a virtual environment for this project (optional but recommended):
+1. If Python 3.11 isn't installed, download it from the [official Python website](https://www.python.org/downloads/).
+2. Install Poetry by executing:
+    ```bash
+    pip install poetry 
+    ```
 
+### 2. Package Installation
+Install the required packages by running:
 ```bash
-python3.11 -m venv myenv
-source myenv/bin/activate  # For Unix/Mac 
-myenv\Scripts\activate  # For Windows 
+poetry install
 ```
 
-### 2. Packages Installation
-```bash
-cd zcy_donation
-pip install -r requirements.txt
-```
-
-### 3. Creating a `.env` File and Adding `DATABASE_URL` in the `zcy_donation` Folder
-
-To manage sensitive data and configurations separately, follow these steps:
-
-1. **Navigate to the `zcy_donation` Folder:**
-   ```bash
-   cd /path/to/zcy_donation
-   ```
-
+### 3. Configuring Sensitive Data
+1. **Navigate to the `config` Folder:**
+    ```bash
+    cd /path/to/config
+    ```
 2. **Create the `.env` File:**
+    ```bash
+    touch .env
+    ```
+3. **Edit the `.env` file:**
+    Add your database connection details as separate fields:
+    ```dotenv
+    DB_NAME='dbname'
+    DB_USER='username'
+    DB_PASSWORD='password'
+    DB_HOST='hostname'
+    ```
+    Replace `'dbname'`, `'username'`, `'password'`, and `'hostname'` with your actual database credentials.
+    Also, update the key:
+    ```dotenv
+    SECRET_KEY='secret_key'
+    ```
+   Generate the key with:
    ```bash
-   touch .env
-   ```
-3. **Open `.env` file:**
-
-2. **Add Database Information:**
-   Insert the database connection details as separate fields:
-   ```dotenv
-   DB_NAME='dbname'
-   DB_USER='username'
-   DB_PASSWORD='password'
-   DB_HOST='hostname'
-   ```
-   Replace `'dbname'`, `'username'`, `'password'`, and `'hostname'` with your actual database credentials.
-
-3. **Save the Changes:**
-   Save the `.env` file with the added database configuration fields.
-
-### 3. MySQL Configuration
-Make sure the MySQL server is running.
-
-### 4. Running the Application
-1. Navigate to the project directory containing the Django project.
-2. Run the Django development server:
-   ```bash
-   python manage.py runserver
+   python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
    ```
 
-### 5. Accessing the Application
+4. **Save the Changes:**
+    Save the `.env` file with the added database configuration fields.
+
+### 4. MySQL Configuration
+Ensure the MySQL server is active and running.
+
+### 5. Running the Application
+1. Navigate to the Django project directory.
+2. Start the Django development server:
+    ```bash
+    poetry run python manage.py runserver
+    ```
+
+### 6. Accessing the Application
 Open a web browser and go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) to access the application.
