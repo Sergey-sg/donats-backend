@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "zcy-donation"
+version = "0.1.0"
+description = "The project to donate to the war effort"
+authors = ["team1-backend"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0"
+djangorestframework = "^3.14.0"
+mysqlclient = "^2.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
