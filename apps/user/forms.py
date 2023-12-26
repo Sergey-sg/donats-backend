@@ -8,10 +8,3 @@ class CustomUserLoginForm(UserCreationForm):
     class Meta:
         model = get_user_model()
         fields = ('email', 'password',)
-
-
-class CustomUserChangeForm(UserChangeForm):
-    """Model form for update user"""
-    class Meta:
-        model = get_user_model()
-        fields = ('first_name', 'last_name', 'public_name')
