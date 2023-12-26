@@ -81,7 +81,7 @@ class VolunteerInfo(models.Model):
     )
 
     class Meta:
-        verbose_name = _('Volunteer')
+        verbose_name = _('volunteer')
         verbose_name_plural = _('Volunteers')
         ordering = ['public_name']
 
