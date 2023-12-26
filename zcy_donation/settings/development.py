@@ -1,6 +1,6 @@
 from os import getenv
-from pathlib import Path
 from dotenv import load_dotenv
+from .base import *
 
 
 # Define the path to the .env file
