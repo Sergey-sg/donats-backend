@@ -1,4 +1,3 @@
-from zcy_donation.settings.environments.base import *
 from os import getenv
 
 # SECURITY WARNING: don't run with debug turned on in production!
