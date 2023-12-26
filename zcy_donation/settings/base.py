@@ -11,17 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
-
-# Define the path to the .env file
-env_path = Path(__file__).resolve().parents[3] / 'config' / '.env'
-
-# Load the environment variables from the .env file
-load_dotenv(env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Application definition
 
