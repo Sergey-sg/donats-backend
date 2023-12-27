@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from .models import User
 
 
-def delete_cloudinary_image(public_id):
+def delete_cloudinary_image(public_id) -> None:
     """A function to delete an image from Cloudinary"""
     if public_id:
         cloudinary_uploader.destroy(public_id)
@@ -13,9 +13,12 @@ def delete_cloudinary_image(public_id):
 
 # Signal before saving the User object
 @receiver(pre_save, sender=User)
-def delete_old_profile_picture(sender, instance, **kwargs):
+def delete_old_profile_picture(sender, instance, **kwargs) -> None:
     """Deletes the old image from Cloudinary if it has changed"""
-    old_instance = sender.objects.get(pk=instance.pk)
+    try:
+        old_instance = sender.objects.get(pk=instance.pk)
+    except sender.DoesNotExist:
+        old_instance = None
 
     if old_instance.photo_profile and old_instance.photo_profile != instance.photo_profile:
         delete_cloudinary_image(old_instance.photo_profile.public_id)
