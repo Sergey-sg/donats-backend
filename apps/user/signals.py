@@ -16,8 +16,15 @@ def delete_cloudinary_image(public_id):
 def delete_old_profile_picture(sender, instance, **kwargs):
     """Deletes the old image from Cloudinary if it has changed"""
     old_instance = sender.objects.get(pk=instance.pk)
+
     if old_instance.photo_profile and old_instance.photo_profile != instance.photo_profile:
         delete_cloudinary_image(old_instance.photo_profile.public_id)
+
+    if instance.photo_profile and not instance.photo_alt:
+        instance.photo_alt = f"Alt text for {instance.email} photo profile"
+
+    if not instance.photo_profile:
+        instance.photo_alt = None
 
 
 # Signal before deleting the User object
