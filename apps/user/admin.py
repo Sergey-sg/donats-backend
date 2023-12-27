@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserLoginForm
     model = User
     list_display = list_filter = ('email', 'is_staff', 'is_active',)
-    fieldsets = (('Permissions', {'fields': ('is_staff', 'is_active')}),)
+    fieldsets = (('Permissions', {'fields': ('is_staff', 'is_active', 'photo_profile', 'photo_alt')}),)
     add_fieldsets = (
         (None, {
             'classes': ('wide',),

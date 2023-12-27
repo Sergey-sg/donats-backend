@@ -1,10 +1,12 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import EmailField, CharField, URLField
+from cloudinary.models import CloudinaryField
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinLengthValidator
 
 from .managers import CustomUserManager
+from .validators import PHONE_REGEX
 
 
 class User(AbstractUser):
@@ -19,6 +21,20 @@ class User(AbstractUser):
         help_text=_('used to login the site'),
         unique=True,
     )
+    photo_profile = CloudinaryField(
+        'photo_profile',
+        folder='photo_profile',
+        blank=True,
+        null=True
+    )
+    photo_alt = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name=_('photo_alt'),
+        help_text=_('text to be loaded in case of image loss')
+    )
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
@@ -45,7 +61,7 @@ class VolunteerInfo(models.Model):
              additional_info (str): description of the volunteer's activities
              active (bool): active volunteer account or not
     """
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         verbose_name=_('user'),
@@ -68,6 +84,15 @@ class VolunteerInfo(models.Model):
         validators=[MinLengthValidator(3)],
         verbose_name=_('last name'),
         help_text=_('last name of the user')
+    )
+    phone_number = models.CharField(
+        validators=[PHONE_REGEX],
+        unique=True,
+        max_length=13,
+        null=True,
+        blank=True,
+        verbose_name=_('phone number'),
+        help_text=_('The phone number must be in the format: "+380999999999"')
     )
     additional_info = models.TextField(
         verbose_name=_('additional info'),
