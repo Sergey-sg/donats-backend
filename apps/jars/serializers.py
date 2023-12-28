@@ -1,6 +1,9 @@
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseForbidden
 from rest_framework import serializers
 
 from .models import Jar, JarTag
+from ..user.models import VolunteerInfo
 
 
 class JarTagSerializer(serializers.ModelSerializer):
@@ -78,13 +81,19 @@ class JarCreateSerializer(serializers.ModelSerializer):
         model = Jar
         fields = ['monobank_id', 'title', 'tags']
 
-    def create(self, validated_data) -> Jar:
+    def create(self, validated_data) -> HttpResponseForbidden | Jar:
         tags_data = validated_data.pop('tags')
+        # user = self.context['request'].user
+        # try:
+        #     volunteer = VolunteerInfo.objects.get(user=user)
+        # except ObjectDoesNotExist:
+        #     return HttpResponseForbidden("You don't have permission to access this resource.")
+        # validated_data['volunteer'] = volunteer
         jar = Jar.objects.create(**validated_data)
 
         for tag_data in tags_data:
             tag = JarTag.objects.get(name=tag_data['name'])
-            jar.tags.add(tag)
+            jar.tags.add(tag.pk)
 
         jar.save()
 
