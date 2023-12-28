@@ -12,6 +12,8 @@ djangorestframework = "^3.14.0"
 mysqlclient = "^2.2.1"
 python-dotenv = "^1.0.0"
 cloudinary = "^1.37.0"
+djangorestframework-simplejwt = "^5.3.1"
+django-filter = "^23.5"
 
 
 [build-system]
