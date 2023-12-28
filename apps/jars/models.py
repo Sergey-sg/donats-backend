@@ -10,7 +10,7 @@ class JarTag(models.Model):
         Jar tag model
             attributes:
                  name (str): jar tag name
-        """
+    """
     name = models.CharField(
         max_length=50,
         validators=[MinLengthValidator(2)],
@@ -51,8 +51,8 @@ class Jar(models.Model):
         unique=True
     )
     title = models.CharField(
-        max_length=50,
-        validators=[MinLengthValidator(1)],
+        max_length=100,
+        validators=[MinLengthValidator(5)],
         verbose_name=_('jar name'),
         help_text=_('Name of jar specified by user'),
     )
@@ -66,14 +66,7 @@ class Jar(models.Model):
         null=True,
         blank=True
     )
-    current = models.IntegerField(
-        validators=[MinValueValidator(0, 'Value can\'t be less than 0')],
-        verbose_name=_('current'),
-        help_text=_('A current sum in jar'),
-        null=True,
-        blank=True
-    )
-    active = models.BooleanField(null=True)
+    active = models.BooleanField(default=False)
     date_added = models.DateTimeField(
         auto_now_add=True,
         verbose_name=_('date added'),
@@ -91,7 +84,33 @@ class Jar(models.Model):
     class Meta:
         verbose_name = _('jar')
         verbose_name_plural = _('jars')
-        ordering = ['-date_added', 'current']
+        ordering = ['-date_added']
 
     def __str__(self):
         return self.title
+
+
+class JarCurrentSum(models.Model):
+    """
+        Jar current sum model
+            attributes:
+                 sum (int): jar current sum
+                 jar (bigint): foreign key to jar which sum is represented
+    """
+    sum = models.IntegerField(
+        validators=[MinValueValidator(0)],
+        help_text=_('A current sum in jar')
+    )
+    jar = models.ForeignKey(
+        Jar,
+        on_delete=models.CASCADE,
+        verbose_name=_('jar id'),
+    )
+
+    class Meta:
+        verbose_name = _('jar current sum')
+        verbose_name_plural = _('jar current sums')
+        ordering = ['sum']
+
+    def __str__(self):
+        return self.sum
