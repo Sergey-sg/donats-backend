@@ -11,7 +11,7 @@ class CustomProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = VolunteerInfo
-        fields = ['public_name', 'first_name', 'last_name']
+        fields = ['public_name', 'first_name', 'last_name', 'additional_info']
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
