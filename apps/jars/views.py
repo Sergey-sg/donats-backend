@@ -2,14 +2,18 @@ import json
 
 from django.core.serializers import serialize
 from django.urls import reverse
-
-from apps.jars.models import Jar, JarTag
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, generics
+from rest_framework.permissions import AllowAny
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseRedirect,
     JsonResponse,
     HttpResponseServerError
 )
+
+from .models import Jar, JarTag
+from .serializers import JarsSerializer
 
 
 def all_jars(request):
@@ -36,3 +40,13 @@ def jars_tag_filter(request):
             return HttpResponseBadRequest("Tag doesn't exist")
     else:
         return HttpResponseRedirect(reverse('jars_list'))
+
+
+class JarsListView(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = Jar.objects.all()
+    serializer_class = JarsSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    search_fields = ['title']
+    ordering_fields = ['date_added']
+    filterset_fields = ['tags__name']
