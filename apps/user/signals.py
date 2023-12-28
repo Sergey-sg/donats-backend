@@ -20,7 +20,7 @@ def delete_old_profile_picture(sender, instance, **kwargs) -> None:
     except sender.DoesNotExist:
         old_instance = None
 
-    if old_instance.photo_profile and old_instance.photo_profile != instance.photo_profile:
+    if old_instance and old_instance.photo_profile and old_instance.photo_profile != instance.photo_profile:
         delete_cloudinary_image(old_instance.photo_profile.public_id)
 
     if instance.photo_profile and not instance.photo_alt:
