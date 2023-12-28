@@ -38,29 +38,35 @@ class Jar(models.Model):
              date_added (date): date when jar was added to application
     """
     monobank_id = models.CharField(
-        max_length=11,
+        max_length=31,
         validators=[MinValueValidator(10)],
         verbose_name=_('jar id'),
-        help_text=_('ID of monobank jar')
+        help_text=_('ID of monobank jar'),
+        primary_key=True
     )
     title = models.CharField(
         max_length=50,
         validators=[MinValueValidator(1)],
         verbose_name=_('jar name'),
-        help_text=_('Name of jar specified by user')
+        help_text=_('Name of jar specified by user'),
     )
     tags = models.ManyToManyField(
         to=JarTag
+
     )
     goal = models.IntegerField(
         validators=[MinValueValidator(0, 'Value can\'t be less than 0')],
         verbose_name=_('goal'),
-        help_text=_('A goal sum of jar')
+        help_text=_('A goal sum of jar'),
+        null=True,
+        blank=True
     )
     current = models.IntegerField(
         validators=[MinValueValidator(0, 'Value can\'t be less than 0')],
         verbose_name=_('current'),
-        help_text=_('A current sum in jar')
+        help_text=_('A current sum in jar'),
+        null=True,
+        blank=True
     )
     date_added = models.DateTimeField(
         auto_now_add=True
