@@ -43,6 +43,22 @@ def jars_tag_filter(request):
 
 
 class JarsListView(generics.ListAPIView):
+    """
+    View to list Jars.
+
+    * Requires no authentication.
+    * Returns a list of Jars.
+
+    Query Parameters:
+        - `search`: Search by title.
+        - `ordering`: Order by date_added.
+        - `tags__name`: Filter by tags name.
+
+    Example:
+    ```
+    /api/jars/?search=example&ordering=-date_added&tags__name=name-tag
+    ```
+    """
     permission_classes = [AllowAny]
     queryset = Jar.objects.all()
     serializer_class = JarsSerializer
