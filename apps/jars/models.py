@@ -2,10 +2,15 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from apps.main_page.managers import JarManager, JarTagManager
+from apps.jars.managers import JarManager, JarTagManager
 
 
 class JarTag(models.Model):
+    """
+        Jar tag model
+            attributes:
+                 name (str): jar tag name
+        """
     name = models.CharField(
         max_length=50,
         validators=[MinValueValidator(2)],
@@ -16,8 +21,8 @@ class JarTag(models.Model):
     objects = JarTagManager()
 
     class Meta:
-        verbose_name = _('tag')
-        verbose_name_plural = _('tags')
+        verbose_name = _('jar tag')
+        verbose_name_plural = _('jar tags')
         ordering = ['name']
 
 

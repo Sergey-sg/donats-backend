@@ -4,7 +4,7 @@ from django.utils import text
 
 class JarManager(models.Manager):
     def create_jar(self, monobank_id, title, **extra_fields):
-        title = text.capfirst(title)
+        title = text.capfirst(title.lower())
         jar = self.model(monobank_id=monobank_id, title=title, **extra_fields)
         jar.save()
         return jar
@@ -12,7 +12,7 @@ class JarManager(models.Manager):
 
 class JarTagManager(models.Manager):
     def create_tag(self, name):
-        name = name.lower()
+        name = text.capfirst(name.lower())
         tag = self.model(name=name)
         tag.save()
         return tag
