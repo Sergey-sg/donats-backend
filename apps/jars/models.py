@@ -68,7 +68,15 @@ class Jar(models.Model):
         blank=True
     )
     date_added = models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
+        verbose_name=_('date added'),
+        help_text=_('The date and time when jar was added to website.'),
+    )
+    date_closed = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name=_('date closed'),
+        help_text=_('The date and time when goal sum in jar was reached.'),
     )
 
     objects = JarManager()
