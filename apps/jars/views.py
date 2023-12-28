@@ -4,7 +4,7 @@ from django.core.serializers import serialize
 from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseRedirect,
@@ -13,7 +13,7 @@ from django.http import (
 )
 
 from .models import Jar, JarTag
-from .serializers import JarsSerializer
+from .serializers import JarsSerializer, JarCreateSerializer
 
 
 def all_jars(request):
@@ -56,7 +56,7 @@ class JarsListView(generics.ListAPIView):
 
     Example:
     ```
-    /api/jars/?search=example&ordering=-date_added&tags__name=name-tag
+    /api/jars/?search=example&ordering=-date_added&tags__name=name
     ```
     """
     permission_classes = [AllowAny]
@@ -66,3 +66,48 @@ class JarsListView(generics.ListAPIView):
     search_fields = ['title']
     ordering_fields = ['date_added']
     filterset_fields = ['tags__name']
+
+
+class JarCreateView(generics.ListCreateAPIView):
+    """
+    API view for creating a new Jar instance.
+
+    - Requires the user to be authenticated.
+    - Supports creating a new Jar instance.
+
+    Request Method:
+        - POST: Create a new Jar instance.
+
+    Request Body (for POST request):
+        - `monobank_id` (str): The ID of the jar in Monobank (required).
+        - `title` (str): The title of the jar (required).
+        - `tags` (list): List of tags associated with the jar (required).
+
+    Example:
+    ```json
+    {
+        "monobank_id": "1234567890",
+        "title": "Savings Jar",
+        "tags": [{"name": "savings"}, {"name": "finance"}]
+    }
+    ```
+
+    Response:
+    - Status Code: 201 Created (for successful creation).
+    - Status Code: 400 Bad Request (for validation errors).
+
+    Response Example (for successful creation):
+    ```json
+    {
+        "monobank_id": "1234567890",
+        "title": "Savings Jar",
+        "tags": [{"name": "savings"}, {"name": "finance"}],
+        "goal": 0,
+        "current": 0,
+        "date_added": "2023-01-01T12:00:00Z"
+    }
+    ```
+    """
+    queryset = Jar.objects.none()    # queryset = Jar.objects.all()
+    serializer_class = JarCreateSerializer
+    # permission_classes = [IsAuthenticated]

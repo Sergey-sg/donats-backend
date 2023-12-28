@@ -54,3 +54,38 @@ class JarsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jar
         fields = ['monobank_id', 'title', 'tags', 'goal', 'current', 'date_added']
+
+
+class JarCreateSerializer(serializers.ModelSerializer):
+    """
+    Serializer for creating a new Jar instance.
+
+    Fields:
+        - `monobank_id` (str): The ID of the jar in Monobank.
+        - `title` (str): The title of the jar.
+        - `tags` (list): List of tags associated with the jar.
+
+    Example:
+    ```json
+    {
+        "monobank_id": "1234567890",
+        "title": "Savings Jar",
+        "tags": [{"name": "savings"}, {"name": "finance"}]
+    }
+    ```
+    """
+    class Meta:
+        model = Jar
+        fields = ['monobank_id', 'title', 'tags']
+
+    def create(self, validated_data) -> Jar:
+        tags_data = validated_data.pop('tags')
+        jar = Jar.objects.create(**validated_data)
+
+        for tag_data in tags_data:
+            tag = JarTag.objects.get(name=tag_data['name'])
+            jar.tags.add(tag)
+
+        jar.save()
+
+        return jar
