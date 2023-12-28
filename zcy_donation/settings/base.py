@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'apps.user',
     'apps.auth',
+    'apps.jars'
 ]
 
 MIDDLEWARE = [
