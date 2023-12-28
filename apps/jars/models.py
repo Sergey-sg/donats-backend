@@ -15,7 +15,8 @@ class JarTag(models.Model):
         max_length=50,
         validators=[MinLengthValidator(2)],
         verbose_name=_('name'),
-        help_text=_('The name of tag')
+        help_text=_('The name of tag'),
+        unique=True
     )
 
     objects = JarTagManager()
@@ -24,6 +25,9 @@ class JarTag(models.Model):
         verbose_name = _('jar tag')
         verbose_name_plural = _('jar tags')
         ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class Jar(models.Model):
@@ -35,14 +39,16 @@ class Jar(models.Model):
              tags (str): list of tags separated by comma
              goal (int): the goal sum of jar
              current (int): the current sum in jar
+             active (bool): show whether jar is still active
              date_added (date): date when jar was added to application
+             date_closed (date): The date and time when goal sum in jar was reached.
     """
     monobank_id = models.CharField(
         max_length=31,
         validators=[MinLengthValidator(10)],
         verbose_name=_('jar id'),
         help_text=_('ID of monobank jar'),
-        primary_key=True
+        unique=True
     )
     title = models.CharField(
         max_length=50,
@@ -67,6 +73,7 @@ class Jar(models.Model):
         null=True,
         blank=True
     )
+    active = models.BooleanField(null=True)
     date_added = models.DateTimeField(
         auto_now_add=True,
         verbose_name=_('date added'),
