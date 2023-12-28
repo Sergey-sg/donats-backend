@@ -1,4 +1,4 @@
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -13,7 +13,7 @@ class JarTag(models.Model):
         """
     name = models.CharField(
         max_length=50,
-        validators=[MinValueValidator(2)],
+        validators=[MinLengthValidator(2)],
         verbose_name=_('name'),
         help_text=_('The name of tag')
     )
@@ -39,20 +39,19 @@ class Jar(models.Model):
     """
     monobank_id = models.CharField(
         max_length=31,
-        validators=[MinValueValidator(10)],
+        validators=[MinLengthValidator(10)],
         verbose_name=_('jar id'),
         help_text=_('ID of monobank jar'),
         primary_key=True
     )
     title = models.CharField(
         max_length=50,
-        validators=[MinValueValidator(1)],
+        validators=[MinLengthValidator(1)],
         verbose_name=_('jar name'),
         help_text=_('Name of jar specified by user'),
     )
     tags = models.ManyToManyField(
         to=JarTag
-
     )
     goal = models.IntegerField(
         validators=[MinValueValidator(0, 'Value can\'t be less than 0')],
