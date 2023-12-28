@@ -106,6 +106,11 @@ class JarCurrentSum(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_('jar id'),
     )
+    date_added = models.DateField(
+        auto_now_add=True,
+        verbose_name=_('date added'),
+        help_text=_('The date and time when sum was added to db.')
+    )
 
     class Meta:
         verbose_name = _('jar current sum')
