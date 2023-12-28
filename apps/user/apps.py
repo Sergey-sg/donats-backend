@@ -6,3 +6,6 @@ class AccountsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.user'
     verbose_name = _('Users')
+
+    def ready(self):
+        from . import signals

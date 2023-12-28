@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework_simplejwt',
+    'cloudinary',
     'apps.user',
     'apps.auth',
 ]
@@ -113,6 +113,13 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'user.User'
+
+# Cloudinary settings
+CLOUDINARY = {
+  'cloud_name': getenv('CLOUD_NAME'),
+  'api_key': getenv('API_KEY'),
+  'api_secret': getenv('API_SECRET'),
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
