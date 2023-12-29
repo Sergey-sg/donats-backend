@@ -1,38 +1,29 @@
-import json
+from rest_framework import generics, views, status
 
-from django.core.serializers import serialize
-from django.urls import reverse
+from rest_framework.response import Response
 
-from apps.jars.models import Jar, JarTag
-from django.http import (
-    HttpResponseBadRequest,
-    HttpResponseRedirect,
-    JsonResponse,
-    HttpResponseServerError
-)
+from apps.jars import serializers
+from apps.jars.models import Jar
+from apps.jars.serializers import JarSerializer
 
 
-def all_jars(request):
-    try:
-        jars = Jar.objects.all()
-        jars_serialized = serialize('json', jars)
-        jars_json = json.loads(jars_serialized)
-        return JsonResponse(jars_json, safe=False)
-    except:
-        return HttpResponseServerError()
+class AllJarsView(generics.ListAPIView):
+    queryset = Jar.objects.all()
+    serializer_class = serializers.JarSerializer
 
 
-def jars_tag_filter(request):
-    filter_tag = request.GET.get('filter_tag', None)
+class JarByTagView(views.APIView):
+    """
+    View to retrieve a list of jars filtered by tag.
+    """
 
-    if filter_tag:
-        try:
-            tag = JarTag.objects.get(name=filter_tag)
-            filtered_jars_query = Jar.objects.filter(tags=tag)
-            filtered_jars_serialized = serialize('json', filtered_jars_query)
-            filtered_jars_json = json.loads(filtered_jars_serialized)
-            return JsonResponse(filtered_jars_json, safe=False)
-        except JarTag.DoesNotExist:
-            return HttpResponseBadRequest("Tag doesn't exist")
-    else:
-        return HttpResponseRedirect(reverse('jars_list'))
+    def get(self, request):
+        tag = request.GET.get('tag__name')
+        if tag:
+            jars_with_tag = Jar.objects.filter(tags__name=tag)
+            serializer = JarSerializer(jars_with_tag, many=True)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response("redirect: 'jars/'")
+

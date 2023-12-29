@@ -1,7 +1,9 @@
 from django.urls import path
-import apps.jars.views
+
+from apps.jars import views
+
 
 urlpatterns = [
-    path('', apps.jars.views.all_jars, name='jars_list'),
-    path('tags/', apps.jars.views.jars_tag_filter)
+    path('', views.AllJarsView.as_view(), name='all-jars-view'),
+    path('tags/', views.JarByTagView.as_view(), name='jars-tag-filter-view')
 ]

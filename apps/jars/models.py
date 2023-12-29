@@ -2,6 +2,7 @@ from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+import apps.user.models
 from apps.jars.managers import JarManager, JarTagManager
 
 
@@ -36,9 +37,9 @@ class Jar(models.Model):
         attributes:
              monobank_id (str): jar id in monobank
              title (str): jar title
+             volunteer (bigint): reference to volunteer owner
              tags (str): list of tags separated by comma
              goal (int): the goal sum of jar
-             current (int): the current sum in jar
              active (bool): show whether jar is still active
              date_added (date): date when jar was added to application
              date_closed (date): The date and time when goal sum in jar was reached.
@@ -55,6 +56,12 @@ class Jar(models.Model):
         validators=[MinLengthValidator(5)],
         verbose_name=_('jar name'),
         help_text=_('Name of jar specified by user'),
+    )
+    volunteer = models.ForeignKey(
+        apps.user.models.VolunteerInfo,
+        on_delete=models.CASCADE,
+        verbose_name=_('volunteer'),
+        help_text=_('Reference to volunteer to who jar belongs'),
     )
     tags = models.ManyToManyField(
         to=JarTag
