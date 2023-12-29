@@ -5,7 +5,7 @@ from .models import Jar, JarTag
 
 @admin.register(Jar)
 class JarAdmin(admin.ModelAdmin):
-    list_display = ['title', 'monobank_id', 'goal', 'current', 'date_added']
+    list_display = ['title', 'monobank_id', 'goal', 'date_added']
     search_fields = ['monobank_id', 'title', 'tags']
     ordering = ['-date_added']
 

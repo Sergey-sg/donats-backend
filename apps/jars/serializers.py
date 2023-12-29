@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseForbidden
 from rest_framework import serializers
 
-from .models import Jar, JarTag
+from .models import Jar, JarTag, JarCurrentSum
 from ..user.models import VolunteerInfo
 
 
@@ -23,6 +23,12 @@ class JarTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = JarTag
         fields = ['name']
+
+
+class JarCurrentSumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JarCurrentSum
+        fields = ['sum']
 
 
 class JarsSerializer(serializers.ModelSerializer):
@@ -53,10 +59,11 @@ class JarsSerializer(serializers.ModelSerializer):
     ```
     """
     tags = JarTagSerializer(many=True, read_only=True)
+    current_sums = JarCurrentSumSerializer(many=True, read_only=True, source='jarcurrentsum_set')
 
     class Meta:
         model = Jar
-        fields = ['monobank_id', 'title', 'tags', 'goal', 'current', 'date_added']
+        fields = ['monobank_id', 'title', 'tags', 'goal', 'current_sums', 'date_added']
 
 
 class JarCreateSerializer(serializers.ModelSerializer):
@@ -73,7 +80,7 @@ class JarCreateSerializer(serializers.ModelSerializer):
     {
         "monobank_id": "1234567890",
         "title": "Savings Jar",
-        "tags": [{"name": "savings"}, {"name": "finance"}]
+        "tags": [1, 2]
     }
     ```
     """
@@ -92,8 +99,8 @@ class JarCreateSerializer(serializers.ModelSerializer):
         jar = Jar.objects.create(**validated_data)
 
         for tag_data in tags_data:
-            tag = JarTag.objects.get(name=tag_data['name'])
-            jar.tags.add(tag.pk)
+            tag = JarTag.objects.get(name=tag_data)
+            jar.tags.add(tag)
 
         jar.save()
 
