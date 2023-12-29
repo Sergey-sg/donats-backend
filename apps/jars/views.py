@@ -1,17 +1,18 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Jar
+from .permissions import JarPermission
 from .serializers import JarsSerializer, JarCreateSerializer
 
 
-class JarsListView(generics.ListAPIView):
+class JarListCreateView(generics.ListCreateAPIView):
     """
-    View to list Jars.
+    API view for listing and creating Jars.
 
-    * Requires no authentication.
-    * Returns a list of Jars.
+    * Requires authentication.
+    * Allows GET requests for listing.
+    * Allows POST requests for creating (requires active volunteer).
 
     Query Parameters:
         - `search`: Search by title.
@@ -22,44 +23,15 @@ class JarsListView(generics.ListAPIView):
     ```
     /api/jars/?search=example&ordering=-date_added&tags__name=name
     ```
-    """
-    permission_classes = [AllowAny]
-    queryset = Jar.objects.all()
-    serializer_class = JarsSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
-    search_fields = ['title']
-    ordering_fields = ['date_added']
-    filterset_fields = ['tags__name']
 
-
-class JarCreateView(generics.ListCreateAPIView):
-    """
-    API view for creating a new Jar instance.
-
-    - Requires the user to be authenticated.
-    - Supports creating a new Jar instance.
-
-    Request Method:
-        - POST: Create a new Jar instance.
-
-    Request Body (for POST request):
-        - `monobank_id` (str): The ID of the jar in Monobank (required).
-        - `title` (str): The title of the jar (required).
-        - `tags` (list): List of tags associated with the jar.
-
-    Example:
+    POST Request Body (for creating a new Jar):
     ```json
     {
         "monobank_id": "1234567890",
         "title": "Savings Jar",
-        "tags": ["cars", "drons"]
+        "tags": ["tag1", "tag2"]
     }
     ```
-
-    Response:
-    - Status Code: 201 Created (for successful creation).
-    - Status Code: 400 Bad Request (for validation errors).
-    - Status Code: 403 Forbidden (for permission denied)
 
     Response Example (for successful creation):
     ```json
@@ -69,6 +41,19 @@ class JarCreateView(generics.ListCreateAPIView):
     }
     ```
     """
-    queryset = Jar.objects.none()
-    serializer_class = JarCreateSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [JarPermission]
+    queryset = Jar.objects.all()
+    serializer_class = JarsSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    search_fields = ['title']
+    ordering_fields = ['date_added']
+    filterset_fields = ['tags__name']
+
+    def get_serializer_class(self):
+        """
+        Get the appropriate serializer class based on the request method.
+        Use JarCreateSerializer for POST requests and JarsSerializer for others.
+        """
+        if self.request.method == 'POST':
+            return JarCreateSerializer
+        return self.serializer_class

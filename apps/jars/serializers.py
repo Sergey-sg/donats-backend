@@ -46,15 +46,16 @@ class JarCurrentSumSerializer(serializers.ModelSerializer):
 
 class JarsSerializer(serializers.ModelSerializer):
     """
-    Serializer for the Jar model.
+    Serializer for Jar model.
 
     Fields:
-        - `monobank_id` (str): The ID of the jar in Monobank.
-        - `title` (str): The title of the jar.
-        - `tags` (list): List of tags associated with the jar (serialized using JarTagSerializer).
-        - `goal` (int): Goal sum of the jar.
-        - `current_sums` (list): List of current sums in the jar (serialized using JarCurrentSumSerializer).
-        - `date_added` (datetime): Date and time when the jar was added.
+        - `monobank_id`: Monobank ID of the jar.
+        - `title`: Title of the jar.
+        - `tags`: List of tags associated with the jar (serialized using JarTagSerializer).
+        - `volunteer`: Public name of the volunteer associated with the jar.
+        - `goal`: Goal sum of the jar.
+        - `current_sum`: Current sum in the jar.
+        - `date_added`: Date when the jar was added.
 
     Example:
     ```json
@@ -65,18 +66,32 @@ class JarsSerializer(serializers.ModelSerializer):
             {"name": "category1"},
             {"name": "category2"}
         ],
+        "volunteer": "JohnDoe",
         "goal": 1000,
-        "current_sums": [{"sum": 500}, {"sum": 600}],
+        "current_sum": 500,
         "date_added": "2023-01-01T12:00:00Z"
     }
     ```
     """
     tags = JarTagSerializer(many=True, read_only=True)
-    current_sums = JarCurrentSumSerializer(many=True, read_only=True, source='jarcurrentsum_set')
+    current_sum = serializers.SerializerMethodField()
+    volunteer = serializers.CharField(source='volunteer.public_name', read_only=True)
 
     class Meta:
         model = Jar
-        fields = ['monobank_id', 'title', 'tags', 'goal', 'current_sums', 'date_added']
+        fields = ['monobank_id', 'title', 'tags', 'volunteer', 'goal', 'current_sum', 'date_added']
+
+    def get_current_sum(self, instance) -> int | None:
+        """
+        Custom method to get the latest current sum in the jar.
+
+        Returns the latest current sum or None if no sums are available.
+        """
+        try:
+            latest_sum = instance.jarcurrentsum_set.filter().latest('date_added')
+            return JarCurrentSumSerializer(latest_sum).data["sum"]
+        except ObjectDoesNotExist:
+            return None
 
 
 class JarCreateSerializer(serializers.ModelSerializer):
@@ -93,24 +108,29 @@ class JarCreateSerializer(serializers.ModelSerializer):
     {
         "monobank_id": "1234567890",
         "title": "Savings Jar",
-        "tags": ["tag1", "tag2"]
+        "tags": ["cars", "drons"]
     }
     ```
     """
+    tags = serializers.ListField(write_only=True)
+
     class Meta:
         model = Jar
         fields = ['monobank_id', 'title', 'tags']
 
-    tags = serializers.ListField(write_only=True)
-
     def create(self, validated_data) -> HttpResponseForbidden | Jar:
+        """
+        Custom method to create a new Jar instance.
+
+        Returns the created Jar instance or HttpResponseForbidden if the user does not have permission.
+        """
         tags_data = validated_data.pop('tags')
-        # user = self.context['request'].user
-        # try:
-        #     volunteer = VolunteerInfo.objects.get(user=user)
-        # except ObjectDoesNotExist:
-        #     return HttpResponseForbidden("You don't have permission to access this resource.")
-        # validated_data['volunteer'] = volunteer
+        user = self.context['request'].user
+        try:
+            volunteer = VolunteerInfo.objects.get(user=user)
+        except ObjectDoesNotExist:
+            return HttpResponseForbidden("You don't have permission to access this resource.")
+        validated_data['volunteer'] = volunteer
         jar = Jar.objects.create(**validated_data)
 
         for tag_data in tags_data:
