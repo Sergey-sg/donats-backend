@@ -81,14 +81,14 @@ class JarCreateView(generics.ListCreateAPIView):
     Request Body (for POST request):
         - `monobank_id` (str): The ID of the jar in Monobank (required).
         - `title` (str): The title of the jar (required).
-        - `tags` (list): List of tags associated with the jar (required).
+        - `tags` (list): List of tags associated with the jar.
 
     Example:
     ```json
     {
         "monobank_id": "1234567890",
         "title": "Savings Jar",
-        "tags": [{"name": "savings"}, {"name": "finance"}]
+        "tags": ["cars", "drons"]
     }
     ```
 
@@ -101,13 +101,9 @@ class JarCreateView(generics.ListCreateAPIView):
     {
         "monobank_id": "1234567890",
         "title": "Savings Jar",
-        "tags": [{"name": "savings"}, {"name": "finance"}],
-        "goal": 0,
-        "current": 0,
-        "date_added": "2023-01-01T12:00:00Z"
     }
     ```
     """
-    queryset = Jar.objects.none()    # queryset = Jar.objects.all()
+    queryset = Jar.objects.none()
     serializer_class = JarCreateSerializer
     # permission_classes = [IsAuthenticated]

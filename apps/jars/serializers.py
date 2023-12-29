@@ -116,7 +116,7 @@ class JarCreateSerializer(serializers.ModelSerializer):
         for tag_data in tags_data:
             try:
                 tag = JarTag.objects.get(name=tag_data)
-            except JarTag.DoesNotExist:
+            except ObjectDoesNotExist:
                 pass
             else:
                 jar.tags.add(tag)
