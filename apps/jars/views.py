@@ -95,6 +95,7 @@ class JarCreateView(generics.ListCreateAPIView):
     Response:
     - Status Code: 201 Created (for successful creation).
     - Status Code: 400 Bad Request (for validation errors).
+    - Status Code: 403 Forbidden (for permission denied)
 
     Response Example (for successful creation):
     ```json
