@@ -24,12 +24,12 @@ SECRET_KEY = getenv('SECRET_KEY')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': getenv('MYSQL_DATABASE', 'db'),
+        'NAME': getenv('MYSQL_DATABASE'),
         'USER': getenv('MYSQL_USER'),
         'PASSWORD': getenv('MYSQL_PASSWORD'),
-        'HOST': getenv('DB_HOST', 'db'),
+        'HOST': getenv('DB_HOST', 'mysqldb'),
         'PORT': getenv('DB_PORT', '3306'),
     }
 }
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'db']
