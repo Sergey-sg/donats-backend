@@ -19,12 +19,12 @@ class JarPermission(BasePermission):
         Returns True only if the volunteer is active for POST requests.
         Returns False otherwise.
         """
-        if request.method.lower() == 'post':
+        if request.method == 'POST':
             try:
                 volunteer = VolunteerInfo.objects.get(user=request.user.pk)
                 return volunteer.active
             except ObjectDoesNotExist:
                 return False
 
-        if request.method.lower() == 'get':
+        if request.method == 'GET':
             return True

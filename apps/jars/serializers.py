@@ -79,7 +79,7 @@ class JarsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Jar
-        fields = ['monobank_id', 'title', 'tags', 'volunteer', 'goal', 'current_sum', 'date_added']
+        fields = ['pk', 'monobank_id', 'title', 'tags', 'volunteer', 'goal', 'current_sum', 'date_added']
 
     def get_current_sum(self, instance) -> int | None:
         """

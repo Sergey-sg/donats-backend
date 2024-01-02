@@ -1,6 +1,7 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 
+from .filters import JarFilter
 from .models import Jar
 from .permissions import JarPermission
 from .serializers import JarsSerializer, JarCreateSerializer
@@ -45,6 +46,7 @@ class JarListCreateView(generics.ListCreateAPIView):
     queryset = Jar.objects.all()
     serializer_class = JarsSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filterset_class = JarFilter
     search_fields = ['title']
     ordering_fields = ['date_added']
     filterset_fields = ['tags__name']
