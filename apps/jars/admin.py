@@ -1,13 +1,15 @@
 from django.contrib import admin
+from adminsortable2.admin import SortableAdminMixin
 
 from .models import Jar, JarTag
 
 
 @admin.register(Jar)
-class JarAdmin(admin.ModelAdmin):
-    list_display = ['title', 'monobank_id', 'goal', 'date_added']
+class JarAdmin(SortableAdminMixin, admin.ModelAdmin):
+    list_display = ['title', 'monobank_id', 'goal', 'date_added', 'dd_order']
     search_fields = ['monobank_id', 'title', 'tags']
-    ordering = ['-date_added']
+    exclude = ['dd_order']
+    ordering = ['dd_order', '-date_added']
 
 
 @admin.register(JarTag)
