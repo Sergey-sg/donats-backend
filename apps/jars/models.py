@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -74,7 +75,19 @@ class Jar(models.Model):
         null=True,
         blank=True
     )
-    active = models.BooleanField(default=False)
+    title_img = CloudinaryField(
+        'title_img',
+        folder='jar_title_img',
+        blank=True,
+        null=True
+    )
+    img_alt = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name=_('img_alt'),
+        help_text=_('text to be loaded in case of image loss')
+    )
     date_added = models.DateTimeField(
         auto_now_add=True,
         verbose_name=_('date added'),
@@ -83,6 +96,7 @@ class Jar(models.Model):
     date_closed = models.DateTimeField(
         blank=True,
         null=True,
+        default=None,
         verbose_name=_('date closed'),
         help_text=_('The date and time when goal sum in jar was reached.'),
     )
@@ -132,3 +146,63 @@ class JarCurrentSum(models.Model):
 
     def __str__(self):
         return self.sum
+
+
+class JarAlbum(models.Model):
+    """
+   JarAlbum model for managing albums associated with jars.
+
+   Attributes:
+       - `jar` (Jar): ForeignKey to the Jar model, indicating the jar to which the album belongs.
+       - `img` (CloudinaryField): CloudinaryField for storing images associated with the jar album.
+       - `img_alt` (str): A short text to be loaded in case of image loss.
+       - `date_added` (date): The date when the album was added, updated automatically.
+
+   Example:
+   ```
+   {
+       "jar": 1,
+       "img": "<cloudinary_url>",
+       "img_alt": "Alternative text",
+       "date_added": "2024-01-02"
+   }
+   ```
+
+   Fields:
+       - `jar` (required): ForeignKey to the associated Jar model.
+       - `img` (required): CloudinaryField for storing images associated with the jar album.
+       - `img_alt` (optional): A short text to be loaded in case of image loss.
+       - `date_added` (automatic): The date when the album was added, updated automatically.
+
+   Usage:
+       - Each instance of this model represents an album associated with a specific jar.
+   """
+    jar = models.ForeignKey(
+        Jar,
+        on_delete=models.CASCADE,
+        verbose_name=_('jar'),
+        help_text=_('The jar that the jar album belongs to')
+    )
+    img = CloudinaryField(
+        'img',
+        folder='jar_album',
+        blank=True,
+        null=True
+    )
+    img_alt = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name=_('img_alt'),
+        help_text=_('text to be loaded in case of image loss')
+    )
+    date_added = models.DateField(auto_now=True, verbose_name=_('date added'))
+
+    class Meta:
+        verbose_name = _('jar album')
+        verbose_name_plural = _('Albums of jars')
+        ordering = ['-date_added']
+
+    def __str__(self) -> str:
+        """class method returns the JarAlbum in string representation"""
+        return f'{self.img}'

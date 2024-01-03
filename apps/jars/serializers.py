@@ -99,7 +99,8 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
 
     class Meta:
         model = Jar
-        fields = ['id', 'monobank_id', 'title', 'tags', 'volunteer', 'goal', 'current_sum', 'date_added']
+        fields = ['id', 'monobank_id', 'title', 'tags', 'volunteer',
+                  'title_img', 'img_alt', 'goal', 'current_sum', 'date_added']
 
 
 class JarCreateSerializer(serializers.ModelSerializer):
@@ -186,4 +187,4 @@ class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
 
     class Meta:
         model = Jar
-        fields = ['id', 'title', 'tags', 'goal', 'current_sum', 'date_added']
+        fields = ['id', 'title', 'tags', 'title_img', 'img_alt', 'goal', 'current_sum', 'date_added']
