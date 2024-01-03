@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseForbidden
 from rest_framework import serializers
 
+from .mixins import JarCurrentSumMixin
 from .models import Jar, JarTag, JarCurrentSum
 from ..user.models import VolunteerInfo
 
@@ -44,7 +45,7 @@ class JarCurrentSumSerializer(serializers.ModelSerializer):
         fields = ['sum']
 
 
-class JarsSerializer(serializers.ModelSerializer):
+class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
     """
     Serializer for Jar model.
 
@@ -79,19 +80,19 @@ class JarsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Jar
-        fields = ['pk', 'monobank_id', 'title', 'tags', 'volunteer', 'goal', 'current_sum', 'date_added']
+        fields = ['id', 'monobank_id', 'title', 'tags', 'volunteer', 'goal', 'current_sum', 'date_added']
 
-    def get_current_sum(self, instance) -> int | None:
-        """
-        Custom method to get the latest current sum in the jar.
-
-        Returns the latest current sum or None if no sums are available.
-        """
-        try:
-            latest_sum = instance.jarcurrentsum_set.filter().latest('date_added')
-            return JarCurrentSumSerializer(latest_sum).data["sum"]
-        except ObjectDoesNotExist:
-            return None
+    # def get_current_sum(self, instance) -> int | None:
+    #     """
+    #     Custom method to get the latest current sum in the jar.
+    #
+    #     Returns the latest current sum or None if no sums are available.
+    #     """
+    #     try:
+    #         latest_sum = instance.jarcurrentsum_set.filter().latest('date_added')
+    #         return JarCurrentSumSerializer(latest_sum).data["sum"]
+    #     except ObjectDoesNotExist:
+    #         return None
 
 
 class JarCreateSerializer(serializers.ModelSerializer):
@@ -144,3 +145,35 @@ class JarCreateSerializer(serializers.ModelSerializer):
         jar.save()
 
         return jar
+
+
+class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
+    """
+    Serializer for interacting with a list of banners for jars.
+
+    Fields:
+    - id: Unique identifier for the jar.
+    - title: Title of the jar.
+    - tags: List of tags associated with the jar.
+    - goal: Target amount to achieve.
+    - current_sum: Current amount of funds in the jar.
+    - date_added: Date when the jar was added.
+
+    Example:
+    ```json
+    {
+        "id": 1,
+        "title": "Savings Jar",
+        "tags": ["category1", "category2"],
+        "goal": 1000,
+        "current_sum": 500,
+        "date_added": "2023-01-01T12:00:00Z"
+    }
+    ```
+    """
+    tags = serializers.ListField(read_only=True)
+    current_sum = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Jar
+        fields = ['id', 'title', 'tags', 'goal', 'current_sum', 'date_added']
