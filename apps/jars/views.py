@@ -19,6 +19,7 @@ class JarListCreateView(generics.ListCreateAPIView):
         - `search`: Search by title.
         - `ordering`: Order by date_added.
         - `tags__name`: Filter by tags name.
+        - `fill_percentage`: Filter jars by fill percentage.
 
     Example:
     ```
@@ -30,7 +31,8 @@ class JarListCreateView(generics.ListCreateAPIView):
     {
         "monobank_id": "1234567890",
         "title": "Savings Jar",
-        "tags": ["tag1", "tag2"]
+        "tags": ["tag1", "tag2"],
+        "fill_percentage": "-fill_percentage"
     }
     ```
 

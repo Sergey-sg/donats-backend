@@ -1,4 +1,4 @@
-from django.db.models import QuerySet, ExpressionWrapper, F, fields, OuterRef, Subquery
+from django.db.models import QuerySet, F, OuterRef, Subquery
 from django_filters import rest_framework as filters
 
 from .models import Jar, JarCurrentSum
