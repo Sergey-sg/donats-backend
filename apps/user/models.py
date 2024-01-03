@@ -11,9 +11,26 @@ from .validators import PHONE_REGEX
 
 class User(AbstractUser):
     """
-    User model
-        attributes:
-             email (str): used to log in the site
+    User model for the application.
+
+    Attributes:
+        - `email` (str): Email address used for logging into the site.
+        - `photo_profile` (CloudinaryField): Cloudinary field for storing the user's profile photo.
+        - `photo_alt` (str): Text to be displayed in case of image loss for the profile photo.
+
+    Example:
+    ```
+    {
+        "email": "user@example.com",
+        "photo_profile": "<cloudinary_url>",
+        "photo_alt": "User's profile photo"
+    }
+    ```
+
+    Fields:
+        - `email` (required): The email address used for logging in (unique).
+        - `photo_profile` (optional): The Cloudinary URL for the user's profile photo.
+        - `photo_alt` (optional): Text to be displayed in case the profile photo is not available.
     """
     username = None
     email = models.EmailField(
@@ -52,38 +69,67 @@ class User(AbstractUser):
 
 class VolunteerInfo(models.Model):
     """
-    VolunteerInfo model
-        attributes:
-             user (class User): communication with the User model
-             first_name (str): user first name
-             last_name (str): user last name
-             public_name (str): for display in donations and publication in articles
-             additional_info (str): description of the volunteer's activities
-             active (bool): active volunteer account or not
+    VolunteerInfo model for managing volunteer information.
+
+    Attributes:
+        - `user` (User): One-to-one relationship with the User model.
+        - `public_name` (str): Name for display in donations and publication in articles.
+        - `first_name` (str): First name of the volunteer.
+        - `last_name` (str): Last name of the volunteer.
+        - `phone_number` (str): Phone number of the volunteer (optional).
+        - `additional_info` (str): Description of the volunteer's activities.
+        - `active` (bool): Indicates whether the volunteer account is active.
+
+    Example:
+    ```
+    {
+        "user": {
+            "email": "volunteer@example.com",
+            "photo_profile": "<cloudinary_url>",
+            "photo_alt": "Volunteer's profile photo"
+        },
+        "public_name": "JohnDoe",
+        "first_name": "John",
+        "last_name": "Doe",
+        "phone_number": "+380999999999",
+        "additional_info": "Passionate about community service.",
+        "active": True
+    }
+    ```
+
+    Fields:
+        - `user` (required): The associated User model.
+        - `public_name` (required): Name for display in donations and publication in articles.
+        - `first_name` (required): First name of the volunteer.
+        - `last_name` (required): Last name of the volunteer.
+        - `phone_number` (optional): Phone number of the volunteer (in the format: "+380999999999").
+        - `additional_info` (optional): Description of the volunteer's activities.
+        - `active` (optional): Indicates whether the volunteer account is active.
+
     """
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         verbose_name=_('user'),
-        help_text=_('the user that the volunteer belongs to')
+        help_text=_('The user that the volunteer belongs to')
     )
     public_name = models.CharField(
         max_length=150,
         validators=[MinLengthValidator(3)],
         verbose_name=_('public name'),
-        help_text=_('for display in donations and publication in articles')
+        help_text=_('For display in donations and publication in articles')
     )
     first_name = models.CharField(
         max_length=100,
         validators=[MinLengthValidator(3)],
         verbose_name=_('first name'),
-        help_text=_('first name of the user')
+        help_text=_('First name of the user')
     )
     last_name = models.CharField(
         max_length=100,
         validators=[MinLengthValidator(3)],
         verbose_name=_('last name'),
-        help_text=_('last name of the user')
+        help_text=_('Last name of the user')
     )
     phone_number = models.CharField(
         validators=[PHONE_REGEX],
@@ -96,12 +142,12 @@ class VolunteerInfo(models.Model):
     )
     additional_info = models.TextField(
         verbose_name=_('additional info'),
-        help_text=_('description of the volunteer\'s activities'),
+        help_text=_('Description of the volunteer\'s activities'),
         blank=True
     )
     active = models.BooleanField(
         verbose_name=_('active'),
-        help_text=_('active volunteer account or not'),
+        help_text=_('Active volunteer account or not'),
         default=False
     )
 
@@ -117,10 +163,36 @@ class VolunteerInfo(models.Model):
 
 class LinkToSocial(models.Model):
     """
-    LinkToSocial model
-        attributes:
-             volunteer (class VolunteerInfo): communication with the VolunteerInfo model
-             link_to_social (str): a link to a social network
+    LinkToSocial model for managing links to social networks.
+
+    Attributes:
+        - `volunteer` (VolunteerInfo): ForeignKey relationship with the VolunteerInfo model.
+        - `link_to_social` (str): A link to a social network.
+
+    Example:
+    ```
+    {
+        "volunteer": {
+            "user": {
+                "email": "volunteer@example.com",
+                "photo_profile": "<cloudinary_url>",
+                "photo_alt": "Volunteer's profile photo"
+            },
+            "public_name": "JohnDoe",
+            "first_name": "John",
+            "last_name": "Doe",
+            "phone_number": "+380999999999",
+            "additional_info": "Passionate about community service.",
+            "active": true
+        },
+        "link_to_social": "https://www.linkedin.com/in/johndoe/"
+    }
+    ```
+
+    Fields:
+        - `volunteer` (required): The associated VolunteerInfo model.
+        - `link_to_social` (optional): A link to a social network.
+
     """
     volunteer = models.ForeignKey(
         VolunteerInfo,
