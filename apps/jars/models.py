@@ -42,7 +42,8 @@ class Jar(models.Model):
              goal (int): the goal sum of jar
              active (bool): show whether jar is still active
              date_added (date): date when jar was added to application
-             date_closed (date): The date and time when goal sum in jar was reached.
+             date_closed (date): The date and time when goal sum in jar was reached
+             dd_order (int): used to drag and drop items in the admin
     """
     monobank_id = models.CharField(
         max_length=31,
@@ -84,6 +85,11 @@ class Jar(models.Model):
         null=True,
         verbose_name=_('date closed'),
         help_text=_('The date and time when goal sum in jar was reached.'),
+    )
+    dd_order = models.PositiveIntegerField(
+        default=0,
+        blank=False,
+        null=False
     )
 
     objects = JarManager()

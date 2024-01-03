@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'cloudinary',
     'django_filters',
+    'adminsortable2',
     'apps.user',
     'apps.auth',
     'apps.jars'
