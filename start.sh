@@ -1,5 +1,7 @@
 #!/bin/bash
- sleep 30
+
+sleep 30
+
 # Apply database migrations
 poetry run python manage.py migrate
 
