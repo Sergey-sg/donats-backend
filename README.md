@@ -43,10 +43,16 @@ poetry install
     ```dotenv
     SECRET_KEY='secret_key'
     ```
-   Generate the key with:
-   ```bash
-   python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
-   ```
+    Generate the key with:
+    ```bash
+    python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+    ```
+    Add your Cloudinary api settings:
+    ```dotenv
+    CLOUD_NAME='cloud name'
+    API_KEY='api key'
+    API_SECRET='api secret'
+    ```
 
 4. **Save the Changes:**
     Save the `.env` file with the added database configuration fields.

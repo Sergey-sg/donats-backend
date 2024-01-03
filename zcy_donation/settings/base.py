@@ -37,8 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'cloudinary',
+    'django_filters',
+    'adminsortable2',
     'apps.user',
     'apps.auth',
+    'apps.jars'
 ]
 
 MIDDLEWARE = [
