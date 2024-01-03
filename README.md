@@ -58,6 +58,12 @@ Ensure the MySQL server is active and running.
     ```bash
     poetry run python manage.py runserver
     ```
-
-### 6. Accessing the Application
-Open a web browser and go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) to access the application.
+### 6. Run docker container
+Make sure the docker is downloaded locally and .env file is on the same level as docker-compose.yml
+1. Navigate to the Django project directory.
+2. Run docker:
+    ```bash
+    docker-compose up --build
+    ```
+### 7. Accessing the Application
+Open a web browser and go to [http://127.0.0.1:8080/](http://127.0.0.1:8080/) to access the application.
