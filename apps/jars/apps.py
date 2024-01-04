@@ -6,3 +6,6 @@ class MainPageConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'apps.jars'
     verbose_name = _('Jars list')
+
+    def ready(self):
+        from . import signals

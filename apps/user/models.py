@@ -44,7 +44,7 @@ class User(AbstractUser):
         blank=True,
         null=True
     )
-    photo_alt = models.CharField(
+    img_alt = models.CharField(
         max_length=200,
         null=True,
         blank=True,
