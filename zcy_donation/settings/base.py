@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'adminsortable2',
     'apps.user',
     'apps.auth',
-    'apps.jars'
+    'apps.jars',
+    'shared'
 ]
 
 MIDDLEWARE = [

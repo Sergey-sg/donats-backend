@@ -2,28 +2,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseForbidden
 from rest_framework import serializers
 
+from shared.mixins import JarCurrentSumMixin
 from .models import Jar, JarTag, JarCurrentSum
 from ..user.models import VolunteerInfo
-
-
-class JarCurrentSumMixin:
-    def get_current_sum(self, instance) -> int | None:
-        """
-        Custom method to get the latest current sum in the jar.
-
-        Returns the latest current sum or None if no sums are available.
-
-        Args:
-        - instance: The Jar instance for which to retrieve the latest current sum.
-
-        Returns:
-        - int | None: The latest current sum or None if no sums are available.
-        """
-        try:
-            latest_sum = instance.jarcurrentsum_set.latest('date_added')
-            return JarCurrentSumSerializer(latest_sum).data["sum"]
-        except ObjectDoesNotExist:
-            return None
 
 
 class JarTagSerializer(serializers.ModelSerializer):
@@ -99,7 +80,8 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
 
     class Meta:
         model = Jar
-        fields = ['id', 'monobank_id', 'title', 'tags', 'volunteer', 'goal', 'current_sum', 'date_added']
+        fields = ['id', 'monobank_id', 'title', 'tags', 'volunteer',
+                  'title_img', 'img_alt', 'goal', 'current_sum', 'date_added']
 
 
 class JarCreateSerializer(serializers.ModelSerializer):
@@ -186,4 +168,4 @@ class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
 
     class Meta:
         model = Jar
-        fields = ['id', 'title', 'tags', 'goal', 'current_sum', 'date_added']
+        fields = ['id', 'title', 'tags', 'title_img', 'img_alt', 'goal', 'current_sum', 'date_added']
