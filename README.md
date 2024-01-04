@@ -35,8 +35,10 @@ poetry install
     DB_USER='username'
     DB_PASSWORD='password'
     DB_HOST='hostname'
+    DB_PORT='your_port'
+    DB_ROOT_PASSWORD='your_root_password'
     ```
-    Replace `'dbname'`, `'username'`, `'password'`, and `'hostname'` with your actual database credentials.
+    Replace `'dbname'`, `'username'`, `'password'`, `'hostname'`, `'your_port'`, and `'your_root_password'` with your actual database credentials.
     Also, update the key:
     ```dotenv
     SECRET_KEY='secret_key'
@@ -64,6 +66,12 @@ Ensure the MySQL server is active and running.
     ```bash
     poetry run python manage.py runserver
     ```
-
-### 6. Accessing the Application
-Open a web browser and go to [http://127.0.0.1:8000/](http://127.0.0.1:8000/) to access the application.
+### 6. Run docker container
+Make sure the docker is downloaded locally and .env file is on the same level as docker-compose.yml
+1. Navigate to the Django project directory.
+2. Run docker:
+    ```bash
+    docker-compose up --build
+    ```
+### 7. Accessing the Application
+Open a web browser and go to [http://localhost:8080/](http://localhost:8080/) to access the application.

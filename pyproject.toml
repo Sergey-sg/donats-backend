@@ -15,6 +15,10 @@ cloudinary = "^1.37.0"
 djangorestframework-simplejwt = "^5.3.1"
 django-filter = "^23.5"
 django-admin-sortable2 = "^2.1.10"
+cffi = "^1.16.0"
+wheel = "^0.42.0"
+pymysql = "^1.1.0"
+
 
 
 [build-system]
