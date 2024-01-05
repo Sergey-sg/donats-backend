@@ -2,8 +2,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseForbidden
 from rest_framework import serializers
 
-from shared.mixins import JarCurrentSumMixin
-from .models import Jar, JarTag, JarCurrentSum
+from shared.mixins import JarCurrentSumMixin, JarImgUrlMixin
+from .models import Jar, JarTag, AmountOfJar
 from ..user.models import VolunteerInfo
 
 
@@ -41,11 +41,11 @@ class JarCurrentSumSerializer(serializers.ModelSerializer):
     ```
     """
     class Meta:
-        model = JarCurrentSum
+        model = AmountOfJar
         fields = ['sum']
 
 
-class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
+class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarImgUrlMixin):
     """
     Serializer for Jar model.
 
@@ -76,7 +76,9 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
     """
     tags = JarTagSerializer(many=True, read_only=True)
     current_sum = serializers.SerializerMethodField()
-    volunteer = serializers.CharField(source='volunteer.public_name', read_only=True)
+    volunteer = serializers.CharField(
+        source='volunteer.public_name', read_only=True)
+    title_img = serializers.SerializerMethodField()
 
     class Meta:
         model = Jar
@@ -136,7 +138,7 @@ class JarCreateSerializer(serializers.ModelSerializer):
         return jar
 
 
-class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
+class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarImgUrlMixin):
     """
     Serializer for interacting with a list of banners for jars.
 
@@ -165,7 +167,9 @@ class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin):
     """
     tags = JarTagSerializer(many=True, read_only=True)
     current_sum = serializers.SerializerMethodField()
+    title_img = serializers.SerializerMethodField()
 
     class Meta:
         model = Jar
-        fields = ['id', 'title', 'tags', 'title_img', 'img_alt', 'goal', 'current_sum', 'date_added']
+        fields = ['id', 'title', 'tags', 'title_img',
+                  'img_alt', 'goal', 'current_sum', 'date_added']
