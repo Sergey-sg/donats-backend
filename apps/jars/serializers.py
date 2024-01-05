@@ -1,9 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseForbidden
 from rest_framework import serializers
+from django.db import transaction
 
-from shared.mixins import JarCurrentSumMixin, JarImgUrlMixin
-from .models import Jar, JarTag, AmountOfJar
+from shared.cloudinary.utils import get_full_image_url
+
+from .mixins import JarCurrentSumMixin, JarFullTitleUrl
+from .models import Jar, JarAlbum, JarTag, AmountOfJar
 from ..user.models import VolunteerInfo
 
 
@@ -45,7 +48,7 @@ class JarCurrentSumSerializer(serializers.ModelSerializer):
         fields = ['sum']
 
 
-class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarImgUrlMixin):
+class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTitleUrl):
     """
     Serializer for Jar model.
 
@@ -86,6 +89,16 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarImgUrlM
                   'title_img', 'img_alt', 'goal', 'current_sum', 'date_added']
 
 
+class JarAlbumSerializer(serializers.ModelSerializer):
+    img = serializers.SerializerMethodField()
+
+    class Meta:
+        model = JarAlbum
+        fields = ['img', 'img_alt']
+
+    def get_img(self, obj) -> str | None:
+        return get_full_image_url(obj, 'img')
+
 class JarCreateSerializer(serializers.ModelSerializer):
     """
     Serializer for creating a new Jar instance.
@@ -104,26 +117,44 @@ class JarCreateSerializer(serializers.ModelSerializer):
     }
     ```
     """
-    tags = serializers.ListField(write_only=True)
+    tags = serializers.ListField(write_only=True, required=False)
+    album = serializers.ListField(write_only=True, required=False)
 
     class Meta:
         model = Jar
-        fields = ['monobank_id', 'title', 'tags']
+        fields = ['monobank_id', 'title', 'tags', 'title_img', 'img_alt', 'album']
 
+    @transaction.atomic
     def create(self, validated_data) -> HttpResponseForbidden | Jar:
         """
         Custom method to create a new Jar instance.
 
         Returns the created Jar instance or HttpResponseForbidden if the user does not have permission.
         """
-        tags_data = validated_data.pop('tags')
-        user = self.context['request'].user
         try:
-            volunteer = VolunteerInfo.objects.get(user=user)
-        except ObjectDoesNotExist:
-            return HttpResponseForbidden("You don't have permission to access this resource.")
+            tags_data = validated_data.pop('tags')
+        except KeyError:
+            tags_data = []
+        try:
+            validated_data.pop('album')
+        except KeyError:
+            pass
+        try:
+            validated_data.pop('title_img')
+            title_img_data = self.context['request'].FILES['title_img']
+        except KeyError:
+            title_img_data = None
+        try:
+            print(validated_data)
+            album_img_alt = validated_data.pop('album_img_alt')
+        except KeyError:
+            album_img_alt = []
+
+        volunteer = VolunteerInfo.objects.get(user=self.context['request'].user)
         validated_data['volunteer'] = volunteer
+
         jar = Jar.objects.create(**validated_data)
+        jar.title_img = title_img_data
 
         for tag_data in tags_data:
             try:
@@ -133,12 +164,25 @@ class JarCreateSerializer(serializers.ModelSerializer):
             else:
                 jar.tags.add(tag)
 
+        album_files = self.context['request'].FILES.getlist('album', []) 
+        print(len(album_files))
+        for index in range(len(album_files)):
+            img = album_files[index]
+            try:
+                img_alt = album_img_alt[index]
+            except IndexError:
+                img_alt = None
+            print(f'\n{index} {img_alt}\n')
+            img_album = JarAlbum.objects.create(jar=jar, img_alt=img_alt)
+            img_album.img = img
+            img_album.save()
+
         jar.save()
 
         return jar
 
 
-class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarImgUrlMixin):
+class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTitleUrl):
     """
     Serializer for interacting with a list of banners for jars.
 
@@ -173,3 +217,23 @@ class JarsForBannerSerializer(serializers.ModelSerializer, JarCurrentSumMixin, J
         model = Jar
         fields = ['id', 'title', 'tags', 'title_img',
                   'img_alt', 'goal', 'current_sum', 'date_added']
+
+
+class JarSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTitleUrl):
+    tags = JarTagSerializer(many=True, read_only=True)
+    current_sum = serializers.SerializerMethodField()
+    volunteer = serializers.CharField(
+        source='volunteer.public_name', read_only=True)
+    title_img = serializers.SerializerMethodField()
+    album = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Jar
+        fields = ['id', 'monobank_id', 'title', 'tags', 'volunteer',
+                  'title_img', 'img_alt', 'album', 'goal', 'current_sum', 'date_added']    
+        
+    def get_album(self, obj):
+        album = []
+        for image in obj.jaralbum_set.all():
+            album.append(JarAlbumSerializer(image).data)
+        return album

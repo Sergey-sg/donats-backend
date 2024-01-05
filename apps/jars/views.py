@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny
 from .filters import JarFilter
 from .models import Jar
 from .permissions import JarPermission
-from .serializers import JarsSerializer, JarCreateSerializer, JarsForBannerSerializer
+from .serializers import JarSerializer, JarsSerializer, JarCreateSerializer, JarsForBannerSerializer
 
 
 class JarListCreateView(generics.ListCreateAPIView):
@@ -98,3 +98,18 @@ class JarsListForBannerView(generics.ListAPIView):
         except ObjectDoesNotExist:
             jars = Jar.objects.none()
         return jars
+
+
+class JarRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [JarPermission]
+    queryset = Jar.objects.all()
+    serializer_class = JarSerializer
+
+    def get_serializer_class(self) -> Type[JarCreateSerializer | JarsSerializer]:
+        """
+        Get the appropriate serializer class based on the request method.
+        Use JarCreateSerializer for POST requests and JarsSerializer for others.
+        """
+        if self.request.method == 'POST':
+            return JarCreateSerializer
+        return self.serializer_class

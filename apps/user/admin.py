@@ -26,7 +26,7 @@ class CustomUserAdmin(UserAdmin):
 
 class LinkToSocialAdmin(admin.StackedInline):
     model = LinkToSocial
-    extra = 1
+    extra = 0
 
 
 @admin.register(VolunteerInfo)

@@ -1,5 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 
+from shared.cloudinary.utils import get_full_image_url
+
 
 class JarCurrentSumMixin:
     def get_current_sum(self, instance) -> int | None:
@@ -22,8 +24,6 @@ class JarCurrentSumMixin:
             return None
 
 
-class JarImgUrlMixin:
+class JarFullTitleUrl:
     def get_title_img(self, obj):
-        if obj.title_img:
-            return obj.title_img.url
-        return None
+        return get_full_image_url(obj, 'title_img') 
