@@ -123,6 +123,52 @@ class JarsListForBannerView(generics.ListAPIView):
 
 
 class JarRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    API view for retrieving, updating, and deleting a specific Jar.
+
+    * Allows GET requests for retrieving.
+    * Allows PUT requests for updating (requires active volunteer).
+    * Allows DELETE requests for deleting (requires active volunteer).
+
+    Example:
+    ```
+    /api/jars/1/
+    ```
+
+    PUT Request Body (for updating an existing Jar):
+    ```json
+    {
+        "title": "Updated Savings Jar",
+        "tags": ["category1", "category2"],
+        "title_img": <file>,
+        "img_alt": "Updated Savings Jar Image",
+        "album": [
+            {"img": <file>, "img_alt": "Updated Album Image 1"},
+            {"img": <file>, "img_alt": "Updated Album Image 2"}
+        ]
+    }
+    ```
+
+    Response Example (for successful update):
+    ```json
+    {
+        "title": "Updated Savings Jar",
+        "title_img": "<url>",
+        "img_alt": "Updated Savings Jar Image",
+    }
+    ```
+
+    DELETE Request:
+    ```
+    /api/jars/1/
+    ```
+    Response Example (for successful delete):
+    ```json
+    {
+        "detail": "Jar successfully deleted."
+    }
+    ```
+    """
     permission_classes = [JarPermission]
     queryset = Jar.objects.all()
     serializer_class = JarSerializer
