@@ -9,14 +9,13 @@ from rest_framework.permissions import AllowAny
 from .filters import JarFilter
 from .models import Jar
 from .permissions import JarPermission
-from .serializers import JarSerializer, JarsSerializer, JarCreateSerializer, JarsForBannerSerializer
+from .serializers import JarSerializer, JarUpdateSerializer, JarsSerializer, JarCreateSerializer
 
 
 class JarListCreateView(generics.ListCreateAPIView):
     """
     API view for listing and creating Jars.
 
-    * Requires authentication.
     * Allows GET requests for listing.
     * Allows POST requests for creating (requires active volunteer).
 
@@ -28,16 +27,21 @@ class JarListCreateView(generics.ListCreateAPIView):
 
     Example:
     ```
-    /api/jars/?search=example&ordering=-date_added&tags__name=name
+    /api/jars/?search=example&ordering=-date_added&tags__name=name&fill_percentage=-fill_percentage
     ```
 
     POST Request Body (for creating a new Jar):
     ```json
     {
-        "monobank_id": "1234567890",
-        "title": "Savings Jar",
-        "tags": ["tag1", "tag2"],
-        "fill_percentage": "-fill_percentage"
+        "monobank_id": "12345678901",
+        "title": "New Savings Jar",
+        "tags": ["category1", "category2"],
+        "title_img": <file>,
+        "img_alt": "New Savings Jar Image",
+        "album": [
+            {"img": <file>, "img_alt": "Album Image 1"},
+            {"img": <file>, "img_alt": "Album Image 2"}
+        ]
     }
     ```
 
@@ -46,13 +50,16 @@ class JarListCreateView(generics.ListCreateAPIView):
     {
         "monobank_id": "1234567890",
         "title": "Savings Jar",
+        "title_img": "https://example.com/jar-album.jpg",
+        "img_alt": "New Savings Jar Image",
     }
     ```
     """
     permission_classes = [JarPermission]
     queryset = Jar.objects.all()
     serializer_class = JarsSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filter_backends = [filters.SearchFilter,
+                       filters.OrderingFilter, DjangoFilterBackend]
     filterset_class = JarFilter
     search_fields = ['title']
     ordering_fields = ['date_added']
@@ -70,23 +77,38 @@ class JarListCreateView(generics.ListCreateAPIView):
 
 class JarsListForBannerView(generics.ListAPIView):
     """
-    API view for banner listing Jars.
+    API view for listing Jars for banner display.
 
-    - Allows GET requests for listing.
+    * Allows GET requests for listing.
+
+    Example:
+    ```
+    /api/jars/banner/
+    ```
 
     Response Example:
-    ``json
-    {
-        "id": 1,
-        "title": "Savings Jar",
-        "tags": ["category1", "category2"],
-        "goal": 1000,
-        "current_sum": 500,
-        "date_added": "2023-01-01T12:00:00Z"
-    }
+    ```json
+    [
+        {
+            "id": 1,
+            "monobank_id": "12345678901",
+            "title": "Savings Jar",
+            "tags": [
+                {"id": 1, "name": "category1"},
+                {"id": 2, "name": "category2"}
+            ],
+            "volunteer": "JohnDoe",
+            "title_img": "https://example.com/savings-jar.jpg",
+            "img_alt": "Savings Jar Image",
+            "goal": 1000,
+            "current_sum": 500,
+            "date_added": "2023-01-01T12:00:00Z"
+        },
+        // Additional Jar items
+    ]
     ```
     """
-    serializer_class = JarsForBannerSerializer
+    serializer_class = JarsSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self) -> QuerySet:
@@ -105,11 +127,11 @@ class JarRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Jar.objects.all()
     serializer_class = JarSerializer
 
-    def get_serializer_class(self) -> Type[JarCreateSerializer | JarsSerializer]:
+    def get_serializer_class(self) -> Type[JarUpdateSerializer | JarSerializer]:
         """
         Get the appropriate serializer class based on the request method.
-        Use JarCreateSerializer for POST requests and JarsSerializer for others.
+        Use JarUpdateSerializer for PUT requests and JarSerializer for others.
         """
-        if self.request.method == 'POST':
-            return JarCreateSerializer
+        if self.request.method == 'PUT':
+            return JarUpdateSerializer
         return self.serializer_class

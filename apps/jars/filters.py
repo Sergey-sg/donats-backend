@@ -49,7 +49,8 @@ class JarFilter(filters.FilterSet):
         Returns:
             QuerySet: The filtered queryset.
         """
-        subquery = AmountOfJar.objects.filter(jar=OuterRef('pk')).order_by('-date_added')
+        subquery = AmountOfJar.objects.filter(
+            jar=OuterRef('pk')).order_by('-date_added')
         queryset = queryset.annotate(
             latest_sum=Subquery(subquery.values('sum')[:1]),
             fill_percentage=F('latest_sum') * 100.0 / F('goal'),

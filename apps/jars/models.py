@@ -8,9 +8,10 @@ from ..user.models import VolunteerInfo
 
 class JarTag(models.Model):
     """
-        Jar tag model
-            attributes:
-                 name (str): jar tag name
+    Jar tag model
+
+    Fields:
+        - name (str): jar tag name
     """
     name = models.CharField(
         max_length=50,
@@ -32,17 +33,19 @@ class JarTag(models.Model):
 
 class Jar(models.Model):
     """
-    Jar model
-        attributes:
-             monobank_id (str): jar id in monobank
-             title (str): jar title
-             volunteer (bigint): reference to volunteer owner
-             tags (str): list of tags separated by comma
-             goal (int): the goal sum of jar
-             active (bool): show whether jar is still active
-             date_added (date): date when jar was added to application
-             date_closed (date): The date and time when goal sum in jar was reached
-             dd_order (int): used to drag and drop items in the admin
+    Model for representing Jars with associated details.
+
+    Fields:
+        - `monobank_id` (str): ID of the monobank jar.
+        - `title` (str): Name of the jar specified by the user.
+        - `volunteer` (VolunteerInfo): Reference to the volunteer to whom the jar belongs.
+        - `tags` (ManyToManyField[JarTag]): Tags associated with the jar.
+        - `goal` (PositiveIntegerField): A goal sum of the jar.
+        - `title_img` (CloudinaryField): Cloudinary field for the title image of the jar.
+        - `img_alt` (str): Text to be loaded in case of image loss.
+        - `date_added` (DateTimeField): The date and time when the jar was added to the website.
+        - `date_closed` (DateTimeField): The date and time when the goal sum in the jar was reached.
+        - `dd_order` (PositiveIntegerField): Default ordering field.
     """
     monobank_id = models.CharField(
         max_length=31,
@@ -86,7 +89,7 @@ class Jar(models.Model):
         null=True,
         blank=True,
         verbose_name=_('img_alt'),
-        help_text=_('text to be loaded in case of image loss')
+        help_text=_('Text to be loaded in case of image loss')
     )
     date_added = models.DateTimeField(
         auto_now_add=True,
@@ -119,9 +122,9 @@ class Jar(models.Model):
 class AmountOfJar(models.Model):
     """
     Amount of jar model
-        attributes:
+        Fields:
             sum (int): jar current sum
-            jar (bigint): foreign key to jar which sum is represented
+            jar (Jar): foreign key to jar which sum is represented
             date_added (date): date when amount was added
     """
     sum = models.PositiveIntegerField(
@@ -133,7 +136,7 @@ class AmountOfJar(models.Model):
     jar = models.ForeignKey(
         Jar,
         on_delete=models.CASCADE,
-        verbose_name=_('jar id'),
+        verbose_name=_('jar'),
         help_text=_('The Jar that the AmountOfJar belongs to'),
     )
     date_added = models.DateField(
@@ -154,33 +157,14 @@ class AmountOfJar(models.Model):
 
 class JarAlbum(models.Model):
     """
-   JarAlbum model for managing albums associated with jars.
+    Model for representing albums of images associated with Jars.
 
-   Attributes:
-       - `jar` (Jar): ForeignKey to the Jar model, indicating the jar to which the album belongs.
-       - `img` (CloudinaryField): CloudinaryField for storing images associated with the jar album.
-       - `img_alt` (str): A short text to be loaded in case of image loss.
-       - `date_added` (date): The date when the album was added, updated automatically.
-
-   Example:
-   ```
-   {
-       "jar": 1,
-       "img": "<cloudinary_url>",
-       "img_alt": "Alternative text",
-       "date_added": "2024-01-02"
-   }
-   ```
-
-   Fields:
-       - `jar` (required): ForeignKey to the associated Jar model.
-       - `img` (required): CloudinaryField for storing images associated with the jar album.
-       - `img_alt` (optional): A short text to be loaded in case of image loss.
-       - `date_added` (automatic): The date when the album was added, updated automatically.
-
-   Usage:
-       - Each instance of this model represents an album associated with a specific jar.
-   """
+    Fields:
+    - `jar` (Jar): The Jar that the images of JarAlbum belongs to.
+    - `img` (CloudinaryField): Cloudinary field for the image of the album.
+    - `img_alt` (str): Text to be loaded in case of image loss.
+    - `date_added` (DateField): The date when the image was added to the album.
+    """
     jar = models.ForeignKey(
         Jar,
         on_delete=models.CASCADE,
@@ -208,5 +192,5 @@ class JarAlbum(models.Model):
         ordering = ['-date_added']
 
     def __str__(self) -> str:
-        """class method returns the JarAlbum in string representation"""
+        """class method returns the image URL in string representation."""
         return f'{self.img}'

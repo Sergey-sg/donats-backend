@@ -11,6 +11,7 @@ class JarPermission(BasePermission):
     Allows POST requests only for active volunteers.
     Allows GET requests for all users.
     """
+
     def has_permission(self, request, view):
         """
         Check if the user has permission to perform the action.
@@ -19,12 +20,11 @@ class JarPermission(BasePermission):
         Returns True only if the volunteer is active for POST requests.
         Returns False otherwise.
         """
-        if request.method == 'POST' or request.method == 'DELETE':
+        if request.method == 'GET':
+            return True
+        else:
             try:
                 volunteer = VolunteerInfo.objects.get(user=request.user.pk)
                 return volunteer.active
             except ObjectDoesNotExist:
                 return False
-
-        if request.method == 'GET':
-            return True

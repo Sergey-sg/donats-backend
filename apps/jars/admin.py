@@ -11,7 +11,8 @@ class JarAlbumAdmin(admin.StackedInline):
 
 @admin.register(Jar)
 class JarAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ['id', 'title', 'monobank_id', 'goal', 'date_added', 'dd_order']
+    list_display = ['id', 'title', 'monobank_id',
+                    'goal', 'date_added', 'dd_order']
     list_display_links = ['id', 'title']
     search_fields = ['monobank_id', 'title', 'tags']
     inlines = [JarAlbumAdmin]
