@@ -189,7 +189,7 @@ class JarAlbum(models.Model):
     class Meta:
         verbose_name = _('jar album')
         verbose_name_plural = _('Albums of jars')
-        ordering = ['-date_added']
+        ordering = ['date_added']
 
     def __str__(self) -> str:
         """class method returns the image URL in string representation."""
