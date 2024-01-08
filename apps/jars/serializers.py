@@ -56,6 +56,7 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTit
     - `id` (int): The unique identifier for the jar.
     - `monobank_id` (str): Monobank ID of the jar.
     - `title` (str): Title of the jar.
+    - `description` (str): Description for jar.
     - `tags` (List[JarTagSerializer]): List of tags associated with the jar.
     - `volunteer` (str): Public name of the volunteer associated with the jar.
     - `title_img`: A method field returning the title image of the jar.
@@ -70,6 +71,7 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTit
         "id": 1,
         "monobank_id": "12345678901",
         "title": "Savings Jar",
+        "description": "Description for jar",
         "tags": [
             {"id": 1, "name": "category1"},
             {"id": 2, "name": "category2"}
@@ -91,7 +93,7 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTit
 
     class Meta:
         model = Jar
-        fields = ['id', 'monobank_id', 'title', 'tags', 'volunteer',
+        fields = ['id', 'monobank_id', 'title', 'description', 'tags', 'volunteer',
                   'title_img', 'img_alt', 'goal', 'current_sum', 'date_added']
 
 
@@ -130,6 +132,7 @@ class JarCreateSerializer(serializers.ModelSerializer):
     Fields:
     - `monobank_id` (str): Monobank ID of the jar.
     - `title` (str): Title of the jar.
+    - `description` (str): Description for jar.
     - `tags` (List): List of tags associated with the jar.
     - `title_img` (File): Title image for the jar.
     - `img_alt` (str): Alternative text for the jar image.
@@ -140,6 +143,7 @@ class JarCreateSerializer(serializers.ModelSerializer):
     {
         "monobank_id": "12345678901",
         "title": "New Savings Jar",
+        "description": "Description for jar",
         "tags": ["category1", "category2"],
         "title_img": <file>,
         "img_alt": "New Savings Jar Image",
@@ -155,7 +159,7 @@ class JarCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Jar
-        fields = ['monobank_id', 'title', 'tags',
+        fields = ['monobank_id', 'title', 'description', 'tags',
                   'title_img', 'img_alt', 'album']
 
     @transaction.atomic
@@ -191,6 +195,7 @@ class JarUpdateSerializer(serializers.ModelSerializer):
 
     Fields:
     - `title` (str): Title of the jar.
+    - `description` (str): Description for jar.
     - `tags` (List): List of tags associated with the jar.
     - `title_img` (File): Title image for the jar.
     - `img_alt` (str): Alternative text for the jar image.
@@ -200,6 +205,7 @@ class JarUpdateSerializer(serializers.ModelSerializer):
     ```json
     {
         "title": "New Savings Jar",
+        "description": "Description for jar",
         "tags": ["category1", "category2"],
         "title_img": <file>,
         "img_alt": "New Savings Jar Image",
@@ -215,7 +221,7 @@ class JarUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Jar
-        fields = ['title', 'tags', 'title_img', 'img_alt', 'album']
+        fields = ['title', 'description', 'tags', 'title_img', 'img_alt', 'album']
 
     @transaction.atomic
     def update(self, instance, validated_data) -> Jar:
@@ -229,6 +235,7 @@ class JarUpdateSerializer(serializers.ModelSerializer):
             validated_data, self.context['request'])
 
         instance.title = validated_data['title']
+        instance.description = validated_data['description']
         instance.img_alt = validated_data['img_alt']
         instance.title_img = title_img_data
 
@@ -254,6 +261,7 @@ class JarSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTitl
     - `id` (int): The unique identifier for the jar.
     - `monobank_id` (str): Monobank ID of the jar.
     - `title` (str): Title of the jar.
+    - `description` (str): Description for jar.
     - `tags` (List[JarTagSerializer]): List of tags associated with the jar.
     - `volunteer` (str): Public name of the volunteer associated with the jar.
     - `title_img`: A method field returning the title image of the jar.
@@ -269,6 +277,7 @@ class JarSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTitl
         "id": 1,
         "monobank_id": "12345678901",
         "title": "Savings Jar",
+        "description": "Description for jar",
         "tags": [
             {"id": 1, "name": "category1"},
             {"id": 2, "name": "category2"}
@@ -294,7 +303,7 @@ class JarSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTitl
 
     class Meta:
         model = Jar
-        fields = ['id', 'monobank_id', 'title', 'tags', 'volunteer',
+        fields = ['id', 'monobank_id', 'title', 'description', 'tags', 'volunteer',
                   'title_img', 'img_alt', 'album', 'goal', 'current_sum', 'date_added']
 
     def get_album(self, obj) -> list:

@@ -38,6 +38,7 @@ class Jar(models.Model):
     Fields:
         - `monobank_id` (str): ID of the monobank jar.
         - `title` (str): Name of the jar specified by the user.
+        - `description` (str): Description for jar.
         - `volunteer` (VolunteerInfo): Reference to the volunteer to whom the jar belongs.
         - `tags` (ManyToManyField[JarTag]): Tags associated with the jar.
         - `goal` (PositiveIntegerField): A goal sum of the jar.
@@ -59,6 +60,11 @@ class Jar(models.Model):
         validators=[MinLengthValidator(5)],
         verbose_name=_('jar name'),
         help_text=_('Name of jar specified by user'),
+    )
+    description = models.TextField(
+        validators=[MinLengthValidator(50)],
+        verbose_name=_('description'),
+        help_text=_('Description for jar'),
     )
     volunteer = models.ForeignKey(
         VolunteerInfo,
