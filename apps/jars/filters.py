@@ -1,7 +1,7 @@
 from django.db.models import QuerySet, F, OuterRef, Subquery
 from django_filters import rest_framework as filters
 
-from .models import Jar, JarCurrentSum
+from .models import Jar, AmountOfJar
 
 FILTER_CHOICES = (
     ('fill_percentage', 'fill_percentage - ascending'),
@@ -49,7 +49,8 @@ class JarFilter(filters.FilterSet):
         Returns:
             QuerySet: The filtered queryset.
         """
-        subquery = JarCurrentSum.objects.filter(jar=OuterRef('pk')).order_by('-date_added')
+        subquery = AmountOfJar.objects.filter(
+            jar=OuterRef('pk')).order_by('-date_added')
         queryset = queryset.annotate(
             latest_sum=Subquery(subquery.values('sum')[:1]),
             fill_percentage=F('latest_sum') * 100.0 / F('goal'),

@@ -6,16 +6,18 @@ from .models import Jar, JarTag, JarAlbum
 
 class JarAlbumAdmin(admin.StackedInline):
     model = JarAlbum
-    extra = 1
+    extra = 0
 
 
 @admin.register(Jar)
 class JarAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ['title', 'monobank_id', 'goal', 'date_added', 'dd_order']
+    list_display = ['id', 'title', 'monobank_id',
+                    'goal', 'date_added', 'dd_order']
+    list_display_links = ['id', 'title']
     search_fields = ['monobank_id', 'title', 'tags']
     inlines = [JarAlbumAdmin]
     exclude = ['dd_order']
-    ordering = ['dd_order', '-date_added']
+    ordering = ['-dd_order', '-date_added']
 
 
 @admin.register(JarTag)
