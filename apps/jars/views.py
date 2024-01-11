@@ -7,9 +7,9 @@ from rest_framework import filters, generics
 from rest_framework.permissions import AllowAny
 
 from .filters import JarFilter
-from .models import Jar
+from .models import Jar, JarTag
 from .permissions import JarPermission
-from .serializers import JarSerializer, JarUpdateSerializer, JarsSerializer, JarCreateSerializer
+from .serializers import JarSerializer, JarTagSerializer, JarUpdateSerializer, JarsSerializer, JarCreateSerializer
 
 
 class JarListCreateView(generics.ListCreateAPIView):
@@ -116,7 +116,7 @@ class JarsListForBannerView(generics.ListAPIView):
         Get the first 8 Jars ordered by 'dd_order'.
         """
         try:
-            jars = Jar.objects.all().order_by('dd_order')[:8]
+            jars = Jar.objects.filter(date_closed=None).order_by('dd_order')[:8]
         except ObjectDoesNotExist:
             jars = Jar.objects.none()
         return jars
@@ -181,3 +181,30 @@ class JarRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method == 'PUT':
             return JarUpdateSerializer
         return self.serializer_class
+
+
+class TagsListView(generics.ListAPIView):
+    """
+    API view for listing Tags for jars display.
+
+    * Allows GET requests for listing.
+
+    Example:
+    ```
+    /api/jars/tags/
+    ```
+
+    Response Example:
+    ```json
+    [
+        {
+        "id": 1,
+        "name": "category1"
+        },
+        // Additional Tags items
+    ]
+    ```
+    """
+    permission_classes = [AllowAny]
+    queryset = JarTag.objects.all()
+    serializer_class = JarTagSerializer()
