@@ -3,9 +3,11 @@ from django_filters import rest_framework as filters
 
 from .models import Jar, AmountOfJar, JarTag
 
-FILTER_CHOICES = (
+ORDERING_CHOICES = (
     ('fill_percentage', 'fill_percentage - ascending'),
     ('-fill_percentage', 'fill_percentage - descending'),
+    ('date_added', 'date_added - ascending'),
+    ('-date_added', 'date_added - descending'),
 )
 
 
@@ -29,9 +31,9 @@ class JarFilter(filters.FilterSet):
         - "-fill_percentage": Descending order
 
     """
-    fill_percentage = filters.ChoiceFilter(
-        choices=FILTER_CHOICES,
-        method='filter_fill_percentage'
+    ordering = filters.ChoiceFilter(
+        choices=ORDERING_CHOICES,
+        method='ordering_by_fill_percentage_or_date'
     )
     tags = filters.ModelChoiceFilter(
         queryset=JarTag.objects.all(),
@@ -41,9 +43,9 @@ class JarFilter(filters.FilterSet):
 
     class Meta:
         model = Jar
-        fields = ['fill_percentage', 'tags']
+        fields = ['ordering', 'tags']
 
-    def filter_fill_percentage(self, queryset, name, value) -> QuerySet:
+    def ordering_by_fill_percentage_or_date(self, queryset, name, value) -> QuerySet:
         """
         Filter jars based on fill percentage.
 

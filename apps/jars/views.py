@@ -21,13 +21,12 @@ class JarListCreateView(generics.ListCreateAPIView):
 
     Query Parameters:
         - `search`: Search by title.
-        - `ordering`: Order by date_added.
+        - `ordering`: Order by date_added or fill percentage.
         - `tags`: Filter by tags name.
-        - `fill_percentage`: Filter jars by fill percentage.
 
     Example:
     ```
-    /api/jars/?search=example&ordering=-date_added&tags=name&fill_percentage=-fill_percentage
+    /api/jars/?search=example&ordering=-date_added&tags=name
     ```
 
     POST Request Body (for creating a new Jar):
@@ -58,12 +57,9 @@ class JarListCreateView(generics.ListCreateAPIView):
     permission_classes = [JarPermission]
     queryset = Jar.objects.all()
     serializer_class = JarsSerializer
-    filter_backends = [filters.SearchFilter,
-                       filters.OrderingFilter, DjangoFilterBackend]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_class = JarFilter
     search_fields = ['title']
-    ordering_fields = ['date_added']
-    # filterset_fields = ['tags__name']
 
     def get_serializer_class(self) -> Type[JarCreateSerializer | JarsSerializer]:
         """
