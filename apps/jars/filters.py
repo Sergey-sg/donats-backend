@@ -1,7 +1,7 @@
 from django.db.models import QuerySet, F, OuterRef, Subquery
 from django_filters import rest_framework as filters
 
-from .models import Jar, AmountOfJar
+from .models import Jar, AmountOfJar, JarTag
 
 FILTER_CHOICES = (
     ('fill_percentage', 'fill_percentage - ascending'),
@@ -17,11 +17,12 @@ class JarFilter(filters.FilterSet):
 
     Example:
     ```
-    /api/jars/?fill_percentage=-fill_percentage
+    /api/jars/?fill_percentage=-fill_percentage&tags=name
     ```
 
     Query Parameters:
         - `fill_percentage`: Filter jars by fill percentage.
+        - `tags`: Filter by tags name.
 
     Choices:
         - "fill_percentage": Ascending order
@@ -32,10 +33,15 @@ class JarFilter(filters.FilterSet):
         choices=FILTER_CHOICES,
         method='filter_fill_percentage'
     )
+    tags = filters.ModelChoiceFilter(
+        queryset=JarTag.objects.all(),
+        field_name="tags",
+        to_field_name='name',
+    )
 
     class Meta:
         model = Jar
-        fields = ['fill_percentage']
+        fields = ['fill_percentage', 'tags']
 
     def filter_fill_percentage(self, queryset, name, value) -> QuerySet:
         """
