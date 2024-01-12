@@ -50,7 +50,7 @@ class Jar(models.Model):
     """
     monobank_id = models.CharField(
         max_length=31,
-        validators=[MinLengthValidator(10)],
+        validators=[MinLengthValidator(6)],
         verbose_name=_('monobank jar id'),
         help_text=_('ID of monobank jar'),
         unique=True
