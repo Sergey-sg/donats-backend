@@ -152,7 +152,7 @@ class AmountOfJar(models.Model):
         null=True,
         blank=True
     )
-    date_added = models.DateField(
+    date_added = models.DateTimeField(
         auto_now_add=True,
         verbose_name=_('date added'),
         help_text=_('The date and time when sum was added.')
@@ -199,7 +199,7 @@ class JarAlbum(models.Model):
         verbose_name=_('img_alt'),
         help_text=_('text to be loaded in case of image loss')
     )
-    date_added = models.DateField(auto_now=True, verbose_name=_('date added'))
+    date_added = models.DateTimeField(auto_now=True, verbose_name=_('date added'))
 
     class Meta:
         verbose_name = _('jar album')
