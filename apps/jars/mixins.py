@@ -12,20 +12,19 @@ class JarCurrentSumMixin:
         """
         Custom method to get the latest current sum in the jar.
 
-        Returns the latest current sum or None if no sums are available.
+        Returns the latest current sum or 0 if no sums are available.
 
         Args:
         - instance: The Jar instance for which to retrieve the latest current sum.
 
         Returns:
-        - int | None: The latest current sum or None if no sums are available.
+        - int: The latest current sum or 0 if no sums are available.
         """
         try:
             latest_sum = instance.amountofjar_set.latest('date_added')
-            from apps.jars.serializers import JarCurrentSumSerializer
-            return JarCurrentSumSerializer(latest_sum).data["sum"]
+            return latest_sum.sum
         except ObjectDoesNotExist:
-            return None
+            return 0
 
 
 class JarFullTitleUrl:

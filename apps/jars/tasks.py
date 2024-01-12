@@ -35,6 +35,6 @@ def get_statistic_for_jar():
         jar.goal = jar_data.get('jarGoal', jar.goal)
         if jar_data.get('jarStatus') != 'ACTIVE':
             jar.date_closed = datetime.now()
-        AmountOfJar.objects.create(jar=jar, sum=jar_data.get('jarAmount', 0))
+        AmountOfJar.objects.create_and_calculate_difference(jar=jar, sum=jar_data.get('jarAmount', 0))
         jar.save()
         sleep(61)

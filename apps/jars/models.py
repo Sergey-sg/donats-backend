@@ -3,6 +3,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from .managers import AmountOfJarManager
 from ..user.models import VolunteerInfo
 
 
@@ -145,11 +146,19 @@ class AmountOfJar(models.Model):
         verbose_name=_('jar'),
         help_text=_('The Jar that the AmountOfJar belongs to'),
     )
+    incomes = models.PositiveIntegerField(
+        verbose_name=_('incomes'),
+        help_text=_('Amount of incomes'),
+        null=True,
+        blank=True
+    )
     date_added = models.DateField(
         auto_now_add=True,
         verbose_name=_('date added'),
         help_text=_('The date and time when sum was added.')
     )
+
+    objects = AmountOfJarManager()
 
     class Meta:
         verbose_name = _('amount of jar')

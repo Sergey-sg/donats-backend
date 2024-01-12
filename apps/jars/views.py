@@ -7,9 +7,9 @@ from rest_framework import filters, generics
 from rest_framework.permissions import AllowAny
 
 from .filters import JarFilter
-from .models import Jar, JarTag
+from .models import AmountOfJar, Jar, JarTag
 from .permissions import JarPermission
-from .serializers import JarSerializer, JarTagSerializer, JarUpdateSerializer, JarsSerializer, JarCreateSerializer
+from .serializers import AmountOfJarSerializer, JarSerializer, JarTagSerializer, JarUpdateSerializer, JarsSerializer, JarCreateSerializer
 
 
 class JarListCreateView(generics.ListCreateAPIView):
@@ -112,7 +112,8 @@ class JarsListForBannerView(generics.ListAPIView):
         Get the first 8 Jars ordered by 'dd_order'.
         """
         try:
-            jars = Jar.objects.filter(date_closed=None).order_by('dd_order')[:8]
+            jars = Jar.objects.filter(
+                date_closed=None).order_by('dd_order')[:8]
         except ObjectDoesNotExist:
             jars = Jar.objects.none()
         return jars
@@ -204,3 +205,11 @@ class TagsListView(generics.ListAPIView):
     permission_classes = [AllowAny]
     queryset = JarTag.objects.all()
     serializer_class = JarTagSerializer
+
+
+class StatisticListView(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = AmountOfJarSerializer
+
+    def get_queryset(self):
+        return AmountOfJar.objects.filter(jar=self.kwargs.get('pk'))

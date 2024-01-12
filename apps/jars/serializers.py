@@ -29,23 +29,29 @@ class JarTagSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class JarCurrentSumSerializer(serializers.ModelSerializer):
+class AmountOfJarSerializer(serializers.ModelSerializer):
     """
     Serializer for the current sum of a Jar model.
 
     Fields:
+        - `id` (int): The unique identifier for the AmountOfJar.
         - `sum` (int): The current sum in the jar.
+        - `date_added` (datetime): Date when the amount was added.
+        - `incomes` (int): the income difference.
 
     Example:
     ```json
     {
-        "sum": 500
+        "id": 1,
+        "sum": 100000,
+        "incomes": 20000,
+        "date_added": "2023-01-01T12:00:00Z"
     }
     ```
     """
     class Meta:
         model = AmountOfJar
-        fields = ['sum']
+        fields = ['id', 'sum', 'incomes', 'date_added']
 
 
 class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTitleUrl):
