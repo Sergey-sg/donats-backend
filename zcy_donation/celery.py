@@ -35,6 +35,6 @@ def retry_task(self, text):
 app.conf.beat_schedule = {
     'run-get_statistic_for_jar': {
         'task': 'apps.jars.tasks.get_statistic_for_jar',
-        'schedule': crontab(hour=20, minute=7),
+        'schedule': crontab(hour=10, minute=21),
     }
 }

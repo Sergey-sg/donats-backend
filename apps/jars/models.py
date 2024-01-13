@@ -149,7 +149,7 @@ class AmountOfJar(models.Model):
     incomes = models.PositiveIntegerField(
         verbose_name=_('incomes'),
         help_text=_('Amount of incomes'),
-        null=True,
+        default=0,
         blank=True
     )
     date_added = models.DateTimeField(
