@@ -70,6 +70,7 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTit
     - `goal` (float): Goal sum of the jar.
     - `current_sum`: A method field returning the current sum of the jar.
     - `date_added` (datetime): Date when the jar was added.
+    - `date_closed` (datetime): Date when the jar was closed.
 
     Example:
     ```json
@@ -87,7 +88,8 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTit
         "img_alt": "Savings Jar Image",
         "goal": 1000,
         "current_sum": 500,
-        "date_added": "2023-01-01T12:00:00Z"
+        "date_added": "2023-01-01T12:00:00Z",
+        "date_closed": "2023-02-01T12:00:00Z"
     }
     ```
     """
@@ -100,7 +102,7 @@ class JarsSerializer(serializers.ModelSerializer, JarCurrentSumMixin, JarFullTit
     class Meta:
         model = Jar
         fields = ['id', 'monobank_id', 'title', 'description', 'tags', 'volunteer',
-                  'title_img', 'img_alt', 'goal', 'current_sum', 'date_added']
+                  'title_img', 'img_alt', 'goal', 'current_sum', 'date_added', "date_closed"]
 
 
 class JarAlbumSerializer(serializers.ModelSerializer):
@@ -227,7 +229,8 @@ class JarUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Jar
-        fields = ['title', 'description', 'tags', 'title_img', 'img_alt', 'album']
+        fields = ['title', 'description', 'tags',
+                  'title_img', 'img_alt', 'album']
 
     @transaction.atomic
     def update(self, instance, validated_data) -> Jar:

@@ -61,6 +61,12 @@ class JarListCreateView(generics.ListCreateAPIView):
     filterset_class = JarFilter
     search_fields = ['title']
 
+    def get_queryset(self) -> QuerySet:
+        """
+        Get Jars without date_closed.
+        """
+        return Jar.objects.filter(date_closed=None)
+
     def get_serializer_class(self) -> Type[JarCreateSerializer | JarsSerializer]:
         """
         Get the appropriate serializer class based on the request method.
@@ -111,12 +117,7 @@ class JarsListForBannerView(generics.ListAPIView):
         """
         Get the first 8 Jars ordered by 'dd_order'.
         """
-        try:
-            jars = Jar.objects.filter(
-                date_closed=None).order_by('dd_order')[:8]
-        except ObjectDoesNotExist:
-            jars = Jar.objects.none()
-        return jars
+        return Jar.objects.filter(date_closed=None).order_by('dd_order')[:8]
 
 
 class JarRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
