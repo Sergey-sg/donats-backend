@@ -4,5 +4,5 @@ from .views import UserRetrieveUpdateDestroyView
 
 
 urlpatterns = [
-    path('', UserRetrieveUpdateDestroyView, name='user_detail'),
+    path('', UserRetrieveUpdateDestroyView.as_view(), name='user_detail'),
 ]

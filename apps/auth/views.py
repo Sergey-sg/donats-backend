@@ -1,9 +1,12 @@
 from rest_framework import generics, status
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView as SimpleJWTTokenRefreshView, TokenBlacklistView
 
 from apps.auth.serializers import UserRegistrationSerializer, UserLoginSerializer
 
@@ -43,7 +46,7 @@ class UserLoginView(generics.CreateAPIView):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
-class TokenRefreshView(generics.CreateAPIView, TokenRefreshView):
+class TokenRefreshView(generics.CreateAPIView, SimpleJWTTokenRefreshView):
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
