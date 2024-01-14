@@ -15,18 +15,14 @@ class CustomProfileSerializer(serializers.ModelSerializer):
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    user = CustomProfileSerializer(write_only=True)
-    password = serializers.CharField(write_only=True)
+    # password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'user']
+        fields = ['email', 'password']
 
     def create(self, validated_data):
-        user_data = validated_data.pop('user')
-        password = validated_data.pop('password')
-        user = User.objects.create_user(**validated_data, password=password)
-        volunteer_info = VolunteerInfo.objects.create(user=user, **user_data)
+        user = User.objects.create_user(**validated_data)
         return user
     
 

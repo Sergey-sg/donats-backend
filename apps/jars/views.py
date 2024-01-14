@@ -1,6 +1,5 @@
 from typing import Type
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics

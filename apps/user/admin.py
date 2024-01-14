@@ -11,7 +11,7 @@ class CustomUserAdmin(UserAdmin):
     model = User
     list_display = list_filter = ('email', 'is_staff', 'is_active',)
     fieldsets = (
-        (None, {'fields': ('photo_profile', 'photo_alt',)}),
+        (None, {'fields': ('photo_profile', 'img_alt',)}),
         ('Permissions', {'fields': ('is_staff', 'is_active',)}),
     )
     add_fieldsets = (
