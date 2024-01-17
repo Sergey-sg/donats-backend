@@ -61,7 +61,7 @@ def formate_validate_data(validated_data, request) -> list:
     try:
         album_data = validated_data.pop('album')
     except KeyError:
-        pass
+        album_data = []
     try:
         validated_data.pop('title_img')
         title_img_data = request.FILES['title_img']

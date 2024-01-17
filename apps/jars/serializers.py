@@ -180,13 +180,11 @@ class JarCreateSerializer(serializers.ModelSerializer):
         """
         validated_data, tags_data, album_data, title_img_data = formate_validate_data(
             validated_data, self.context['request'])
-
         jar = Jar.objects.create(**validated_data)
         jar.title_img = title_img_data
 
         add_tag_to_jar(jar, tags_data)
 
-        # for postman formdata
         album = get_album_img_and_img_alt_in_list(
             self.context['request'].FILES, album_data)
 
@@ -251,7 +249,6 @@ class JarUpdateSerializer(serializers.ModelSerializer):
         instance.tags.clear()
         add_tag_to_jar(instance, tags_data)
 
-        # for postman formdata
         album = get_album_img_and_img_alt_in_list(
             self.context['request'].FILES, album_data)
 
